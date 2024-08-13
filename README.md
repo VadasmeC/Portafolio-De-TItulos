@@ -2,7 +2,7 @@
 
  # Integrantes:
  -- Carla...
- -- Joaquin...
+ -- Joaquin Oñate Iglesias
  -- Victor Adasme Carrasco
 
 # Profesor:
