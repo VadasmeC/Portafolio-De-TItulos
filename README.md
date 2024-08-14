@@ -2,7 +2,7 @@
 
  # Integrantes:
    ### Joaquin Oñate Iglesias
-   ### Karla...
+   ### Karla Viedma Reveco
    ### Victor Adasme Carrasco
 
 # Profesor:
