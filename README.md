@@ -1,8 +1,8 @@
 ﻿# Portafolio De TItulos
 
  # Integrantes:
-   ### Carla...
    ### Joaquin Oñate Iglesias
+   ### Karla...
    ### Victor Adasme Carrasco
 
 # Profesor:
