@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-primary">{{ user.first_name }} {{ user.last_name }}</h3>
+                <h5 class="card-title">@{{ user.username | upper }}</h5>
+                <small><i class="bi bi-geo-alt"></i> {{ user.personas.PERS_RUT}}</small>
+                <p class="card-text mt-3">{{ user.personas.PERS_TELEFONO }}</p>
+
+                
+                <hr>
+                <a href="{% url 'exit' %}" class="btn btn-sm btn-success">Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h4>Título cualquiera</h4>
+        <p>a</p>
+    </div>
+</div>
+{% else %}
+    <h4>Título cualquiera</h4>
+    <p>b</p>
+{% endif %}
+
+{% endblock %}
