@@ -11,15 +11,10 @@ class Personas(models.Model):
 	PERS_TELEFONO= models.CharField(max_length=14,null=True, blank=True,verbose_name='Pers_telefono')
 	PERS_DIRECCION = models.CharField(max_length=40,null=True, blank=True,verbose_name='Pers_direccion')
 
+	
+
 	class Meta:
 		ordering = ['-id']
-
-def crear_user_persona(sender, instance, created, **kwargs):
-	if created:
-		Personas.objects.create(user=instance)
-
-def guardar_user_persona(sender, instance, **kwargs):
-	instance.personas.save()
-
-post_save.connect(crear_user_persona, sender=User)
-post_save.connect(guardar_user_persona, sender=User)
+	
+	def __str__(self):
+   		return self.PERS_RUT
