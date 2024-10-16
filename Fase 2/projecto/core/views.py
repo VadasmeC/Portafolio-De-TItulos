@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 
 # Create your views here.
 
@@ -34,3 +36,16 @@ def registro(request):
         data["form"] = user_creation_form
 
     return render(request, 'registration/registro.html', data)
+
+@login_required
+def crear_persona_perfil(request):
+    if request.method == 'POST':
+        form = PersonasPerfilesForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'El perfil ha sido subido correctamente.')
+            return redirect('test')  # Redirige a alguna página de éxito después de guardar
+    else:
+        form = PersonasPerfilesForm()
+
+    return render(request, 'core/test.html', {'form': form})

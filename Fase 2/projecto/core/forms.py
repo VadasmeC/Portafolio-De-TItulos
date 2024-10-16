@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from accounts.models import Personas
+from accounts.models import Personas, PersonasPerfiles
 
 class CustomUserCreationForm(UserCreationForm):
     PERS_RUT = forms.CharField(max_length=9, required=True, label="RUT")
@@ -29,3 +29,12 @@ class CustomUserCreationForm(UserCreationForm):
                 PERS_DIRECCION=self.cleaned_data.get('PERS_DIRECCION'),
             )
         return user
+    
+
+#Formulario personas_perfiles
+
+class PersonasPerfilesForm(forms.ModelForm):
+
+    class Meta:
+        model = PersonasPerfiles
+        fields = ['PEPE_PERS_ID', 'PEPE_CURS_ID','PEPE_PERF_ID']
