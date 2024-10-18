@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+    <h2>Muro</h2>
+
+    <div class="row">
+        {% for publicacion in publicaciones %}
+            <div class="col-12 col-md-6 mb-4">
+                <div class="card">
+                        <h5 class="card-title">{{ publicacion.PUBL_TITULO }}</h5>
+                        <p class="card-text">Creado por: {{ publicacion.PUBL_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</p>
+                        <p class="card-text">{{ publicacion.PUBL_DESCRIPCION }}</p>
+                        <p class="card-text"><small class="text-muted">Publicado el {{ publicacion.PUBL_FECHACREACION }}</small></p>
+                        {% if publicacion.PUBL_IMAGEN %}
+                        <img src="{{ publicacion.PUBL_IMAGEN.url }}" class="card-img-top" alt="" width="400" height="400" role="img"">
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

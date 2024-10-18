@@ -2,7 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from accounts.models import Personas, PersonasPerfiles
+from muro.models import Publicaciones, PublicacionesTipos
 
+#Formulario registro
 class CustomUserCreationForm(UserCreationForm):
     PERS_RUT = forms.CharField(max_length=9, required=True, label="RUT")
     PERS_NOMBRECOMPLETO = forms.CharField(max_length=60, required=True, label="Nombre Completo")
@@ -38,3 +40,20 @@ class PersonasPerfilesForm(forms.ModelForm):
     class Meta:
         model = PersonasPerfiles
         fields = ['PEPE_PERS_ID', 'PEPE_CURS_ID','PEPE_PERF_ID']
+
+
+#Formulario publicaciones
+
+class PublicacionForm(forms.ModelForm):
+    class Meta:
+        model = Publicaciones
+        fields = ['PUBL_TITULO', 'PUBL_DESCRIPCION', 'PUBL_PUTI_ID', 'PUBL_IMAGEN']
+        widgets = {
+            'PUBL_FECHACREACION': forms.DateInput(attrs={'type': 'date'}),
+        }
+    #IMG opcional
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['PUBL_IMAGEN'].required = False
+
+
