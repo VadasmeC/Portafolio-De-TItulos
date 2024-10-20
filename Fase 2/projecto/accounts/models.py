@@ -45,6 +45,7 @@ class PersonasPerfiles(models.Model):
 	PEPE_PERF_ID = models.ForeignKey(Perfiles, on_delete=models.CASCADE, related_name='personas_perfiles')
 	PEPE_PERS_ID = models.ForeignKey(Personas, on_delete=models.CASCADE, related_name='perfiles')
 	PEPE_CURS_ID = models.ForeignKey(Cursos, on_delete=models.CASCADE,null=True, related_name='cursos')
+	PEPE_PEPE_RESPONSABLE = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Responsable')
 
 	class Meta:
 		verbose_name = 'Perfil de Persona'
@@ -54,3 +55,16 @@ class PersonasPerfiles(models.Model):
 		return f'Perfil {self.PEPE_PERF_ID.PERF_NOMBRE} de {self.PEPE_PERS_ID.PERS_NOMBRECOMPLETO} curso {self.PEPE_CURS_ID.CURS_NOMBRE}'
 
 
+#modelo asignaturas
+class Asignaturas(models.Model):
+    ASI_ID = models.AutoField(primary_key=True)
+    ASI_NOMBRE = models.CharField(max_length=100, verbose_name='Nombre de la Asignatura')
+    ASI_CURS_ID = models.ForeignKey(Cursos, on_delete=models.CASCADE, verbose_name='Curso',related_name='asignaturas')
+
+    class Meta:
+        verbose_name = 'Asignatura'
+        verbose_name_plural = 'Asignaturas'
+        ordering = ['ASI_NOMBRE']
+
+    def __str__(self):
+        return self.ASI_NOMBRE

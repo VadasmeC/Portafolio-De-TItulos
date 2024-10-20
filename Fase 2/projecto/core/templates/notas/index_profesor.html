@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Crear Notas</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Seleccionar curso -->
+    <div class="form-group">
+        <label for="curso">Selecciona un curso:</label>
+        <select name="curso" id="curso" class="form-control" required>
+            <option value="" selected disabled>-- Selecciona un curso --</option>
+            {% for curso in cursos_asociados %}
+                <option value="{{ curso.id }}">{{ curso.CURS_NOMBRE }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Mostrar asignaturas si se seleccionó un curso -->
+    {% if asignaturas %}
+        <h3>Asignaturas del curso seleccionado</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Asignatura</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asignatura in asignaturas %}
+                    <tr>
+                        <td>{{ asignatura.ASI_NOMBRE }}</td>
+                        <td>
+                            <a href="{% url 'poner_nota' asignatura.ASI_NOMBRE %}" class="btn btn-primary btn-sm">Poner Nota</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <button type="submit" class="btn btn-success">Ver Asignaturas</button>
+</form>
+
+{% endblock %}

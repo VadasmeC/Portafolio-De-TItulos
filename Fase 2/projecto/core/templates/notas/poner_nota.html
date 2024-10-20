@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Poner Notas en {{ asignatura.ASI_NOMBRE }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <h2>Notas para la asignatura: {{ asignatura.ASI_NOMBRE }}</h2>
+    <table>
+        <tr>
+            <th>Estudiante</th>
+            <th>Nota</th>
+            <th>Descripción</th>
+        </tr>
+        {% for estudiante in estudiantes %}
+            <tr>
+                <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                <td><input type="number" step="0.01" name="nota_{{ estudiante.PEPE_ID }}" required></td>
+                <td><input type="text" name="descripcion_{{ estudiante.PEPE_ID }}" required></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <button type="submit">Guardar Notas</button>
+</form>
+
+{% endblock %}

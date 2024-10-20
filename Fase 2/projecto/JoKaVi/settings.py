@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'muro',
+    'notas'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
