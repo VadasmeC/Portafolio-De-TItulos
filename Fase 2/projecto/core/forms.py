@@ -65,6 +65,6 @@ class NotasForm(forms.ModelForm):
         widgets = {
             'NOTA_VALOR': forms.NumberInput(attrs={'min': 1, 'max': 7}),
             'NOTA_DESCRIPCION': forms.Textarea(attrs={'rows': 3}),
-        }
+        }   
 
 

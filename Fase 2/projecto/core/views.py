@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+import json
+from django.http import JsonResponse
 from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -15,7 +17,34 @@ from notas.models import Notas
 # Create your views here.
 
 def home(request):
-    return render(request, 'core/home.html')
+    # Verificar si el usuario tiene un perfil de Persona
+    if hasattr(request.user, 'personas'):
+        persona = request.user.personas
+        # Obtener todos los perfiles de esa persona
+        perfiles = persona.perfiles.all()
+        
+        # Para cada perfil, obtener el nombre del perfil y el curso asociado
+        perfiles_con_curso = [(perfil.PEPE_ID, perfil.PEPE_PERF_ID.PERF_NOMBRE, perfil.PEPE_CURS_ID.CURS_NOMBRE) for perfil in perfiles]
+
+    else:
+        perfiles_con_curso = []
+
+    context = {
+        'perfiles_con_curso': perfiles_con_curso,
+    }
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        perfil_id = data.get('perfil_id')
+        curso_id = data.get('curso_id')
+
+        # Guardar la selección en la sesión del usuario
+        request.session['perfil_id'] = perfil_id
+        request.session['curso_id'] = curso_id
+
+        return JsonResponse({'success': True})
+        
+    return render(request, 'core/home.html', context)
 
 @login_required
 def test(request):
@@ -89,41 +118,24 @@ def ver_publicaciones(request):
 
 #vista para index_profesor
 @login_required
-def index_profesor(request):
-    # Obtener el perfil del usuario logueado
-    try:
-        perfil_usuario = request.user.personas.perfiles.first()
-    except PersonasPerfiles.DoesNotExist:
-        perfil_usuario = None
+def ver_asignaturas(request):
+    curso_id = request.session.get('curso_id')
+    curso = Cursos.objects.get(CURS_NOMBRE=curso_id)
 
-    # Verificar si el usuario tiene el perfil de "profesor"
-    perfil_profesor = Perfiles.objects.get(PERF_NOMBRE='Profesor')
-    if perfil_usuario.PEPE_PERF_ID != perfil_profesor:
-        return redirect('no_autorizado')  # Redirigir si no es profesor
 
-    # Obtener los cursos asociados al profesor
-    if perfil_usuario:
-        cursos_asociados = Cursos.objects.filter(cursos=perfil_usuario)
+    if curso_id:
+        asignaturas = Asignaturas.objects.filter(ASI_CURS_ID=curso)
     else:
-        cursos_asociados = []
-        
-    if request.method == 'POST':
-        asignaturas = Asignaturas.objects.filter()      # Lógica para agregar notas a cada estudiante del curso y asignatura seleccionados
-    else:
-        asignaturas = None
+        asignaturas = []
 
-    context = {
-        'cursos_asociados': cursos_asociados,
-        'asignaturas': asignaturas,
-    }
+    return render(request, 'notas/index_profesor.html', {'asignaturas': asignaturas})
 
-    return render(request, 'notas/index_profesor.html', context)
+
 
 
 @login_required
 def poner_nota(request, id):
-    
-    asignatura = Asignaturas.objects.get(ASI_NOMBRE = id)
+    asignatura = Asignaturas.objects.get(ASI_ID=id)
     curso = asignatura.ASI_CURS_ID
 
     # Obtener los estudiantes del curso
@@ -132,18 +144,17 @@ def poner_nota(request, id):
     if request.method == 'POST':
         # Guardar las notas enviadas por el formulario
         for estudiante in estudiantes:
-            valor_nota = request.POST.get(f'nota_{estudiante.PEPE_ID}')  # Asegúrate de usar la clave correcta
-            descripcion_nota = request.POST.get(f'descripcion_{estudiante.PEPE_ID}')  # Asegúrate de usar la clave correcta
+            valor_nota = request.POST.get(f'nota_{estudiante.PEPE_ID}')
+            descripcion_nota = request.POST.get(f'descripcion_{estudiante.PEPE_ID}')
             if valor_nota:
                 nota = Notas(
                     NOTA_VALOR=valor_nota,
                     NOTA_DESCRIPCION=descripcion_nota,
-                    NOTA_PEPE_ID=estudiante,  # Asegúrate de que este campo sea una instancia de PersonasPerfiles
-                    NOTA_CURS_ID=curso  # Asegúrate de que este campo sea una instancia de Cursos
+                    NOTA_PEPE_ID=estudiante,
+                    NOTA_CURS_ID=curso
                 )
                 nota.save()
-                messages.success(request, 'Se ha subido las notas.')
-        return redirect('index_profesor')
+        return redirect('lista_notas')
 
     context = {
         'asignatura': asignatura,
@@ -153,6 +164,7 @@ def poner_nota(request, id):
 
     return render(request, 'notas/poner_nota.html', context)
 
+
 #ver notas
 def lista_notas(request):
     notas = Notas.objects.all()
@@ -160,4 +172,21 @@ def lista_notas(request):
     context = {
         'notas': notas,
     }
+    return render(request, 'notas/lista_notas.html', context)
+
+
+
+
+def ver_notas_asignatura(request, asignatura_id):
+    # Obtener la asignatura
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
+
+    # Obtener las notas asociadas al curso de la asignatura
+    notas = Notas.objects.filter(NOTA_CURS_ID=asignatura.ASI_CURS_ID).select_related('NOTA_PEPE_ID')
+
+    context = {
+        'asignatura': asignatura,
+        'notas': notas,
+    }
+
     return render(request, 'notas/lista_notas.html', context)

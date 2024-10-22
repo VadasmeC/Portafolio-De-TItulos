@@ -1,46 +1,37 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Crear Notas</h2>
-
-<form method="post">
-    {% csrf_token %}
-
-    <!-- Seleccionar curso -->
-    <div class="form-group">
-        <label for="curso">Selecciona un curso:</label>
-        <select name="curso" id="curso" class="form-control" required>
-            <option value="" selected disabled>-- Selecciona un curso --</option>
-            {% for curso in cursos_asociados %}
-                <option value="{{ curso.id }}">{{ curso.CURS_NOMBRE }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <!-- Mostrar asignaturas si se seleccionó un curso -->
+<div class="container mt-4">
+    <h2>Asignaturas del curso {{ curso.CURS_NOMBRE }}</h2>
+    
     {% if asignaturas %}
-        <h3>Asignaturas del curso seleccionado</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Asignatura</th>
-                    <th>Acciones</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Asignatura</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for asignatura in asignaturas %}
-                    <tr>
-                        <td>{{ asignatura.ASI_NOMBRE }}</td>
-                        <td>
-                            <a href="{% url 'poner_nota' asignatura.ASI_NOMBRE %}" class="btn btn-primary btn-sm">Poner Nota</a>
-                        </td>
-                    </tr>
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ asignatura.ASI_NOMBRE }}</td>
+                    <td>
+                        <a href="{% url 'poner_nota' asignatura.ASI_ID %}" class="btn btn-primary btn-sm">Poner Notas</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'ver_notas_asignatura' asignatura.ASI_ID %}" class="btn btn-primary">Ver Notas</a>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <p>No hay asignaturas asociadas a este curso.</p>
     {% endif %}
 
-    <button type="submit" class="btn btn-success">Ver Asignaturas</button>
-</form>
-
+    <a href="{% url 'home' %}" class="btn btn-secondary">Volver a seleccionar perfil</a>
+</div>
 {% endblock %}

@@ -2,32 +2,30 @@
 
 {% block content %}
 <div class="container">
-    <h1>Lista de Notas</h1>
-    <table class="table table-striped">
+    <h2>Notas de la Asignatura: {{ asignatura.ASI_NOMBRE }}</h2>
+    <table class="table">
         <thead>
             <tr>
-                <th>Estudiante</th>
-                <th>Asignatura</th>
+                <th>Nombre del Estudiante</th>
                 <th>Nota</th>
-                <th>Descripción</th>
-                <th>Fecha de Creación</th>
+                <th>Fecha</th>
+
             </tr>
         </thead>
         <tbody>
             {% for nota in notas %}
-                <tr>
-                    <td>{{ nota.NOTA_PEPEALUMNO.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
-                    <td>{{ nota.NOTA_CURSO.ASI_NOMBRE }}</td>
-                    <td>{{ nota.NOTA_VALOR }}</td>
-                    <td>{{ nota.NOTA_DESCRIPCION }}</td>
-                    <td>{{ nota.NOTA_FECHACREACION }}</td>
-                </tr>
+            <tr>
+                <td>{{ nota.NOTA_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                <td>{{ nota.NOTA_VALOR }}</td>
+                <td>{{ nota.NOTA_FECHACREACION }}</td>
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="5">No hay notas disponibles.</td>
-                </tr>
+            <tr>
+                <td colspan="5">No hay notas disponibles para esta asignatura.</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'lista_notas' %}" class="btn btn-secondary">Volver a la lista de notas</a>
 </div>
 {% endblock %}
