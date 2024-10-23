@@ -19,10 +19,7 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ asignatura.ASI_NOMBRE }}</td>
                     <td>
-                        <a href="{% url 'poner_nota' asignatura.ASI_ID %}" class="btn btn-primary btn-sm">Poner Notas</a>
-                    </td>
-                    <td>
-                        <a href="{% url 'ver_notas_asignatura' asignatura.ASI_ID %}" class="btn btn-primary">Ver Notas</a>
+                        <a href="{% url 'poner_nota' %}" class="btn btn-primary btn-sm">Poner Notas</a>
                     </td>
                 </tr>
                 {% endfor %}

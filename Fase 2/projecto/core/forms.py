@@ -3,7 +3,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from accounts.models import Personas, PersonasPerfiles
 from muro.models import Publicaciones
-from notas.models import Notas
 
 #Formulario registro de personas
 class CustomUserCreationForm(UserCreationForm):
@@ -56,15 +55,5 @@ class PublicacionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['PUBL_IMAGEN'].required = False
-
-#Formulario notas
-class NotasForm(forms.ModelForm):
-    class Meta:
-        model = Notas
-        fields = ['NOTA_VALOR', 'NOTA_DESCRIPCION']
-        widgets = {
-            'NOTA_VALOR': forms.NumberInput(attrs={'min': 1, 'max': 7}),
-            'NOTA_DESCRIPCION': forms.Textarea(attrs={'rows': 3}),
-        }   
 
 

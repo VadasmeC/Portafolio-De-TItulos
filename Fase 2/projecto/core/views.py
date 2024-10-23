@@ -2,8 +2,10 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import json
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, UpdateView
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
@@ -131,62 +133,64 @@ def ver_asignaturas(request):
     return render(request, 'notas/index_profesor.html', {'asignaturas': asignaturas})
 
 
+# notas marks
+# MOSTRAR LISTA DE ALUMNOS Y NOTAS A LOS PROFESORES
+#PENDIENTE, NO JUNFIONA
+class PonerNotas(TemplateView):
+    template_name = 'poner_notas.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request = self.request
 
-@login_required
-def poner_nota(request, id):
-    asignatura = Asignaturas.objects.get(ASI_ID=id)
-    curso = asignatura.ASI_CURS_ID
+        curso_id = request.session.get('curso_id')
+        curso = Cursos.objects.get(CURS_NOMBRE=curso_id)
+        
+        # Obtiene el curso correspondiente
+        curso = get_object_or_404(Cursos, CURS_NOMBRE=curso_id)
+        
+        # Filtra las notas correspondientes a ese curso
+        notas = Notas.objects.filter(NOTA_CURS_ID=curso)
 
-    # Obtener los estudiantes del curso
-    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=curso)
+        student_data = []
+        for nota in notas:
+            # Obtiene el estudiante a partir del ForeignKey
+            student = get_object_or_404(User, id=nota.NOTA_PEPE_ID.PEPE_ID)  # Asumimos que `id` es el atributo que identifica al usuario
+            student_data.append({
+                'mark_id': nota.NOTA_ID,
+                'name': student.get_full_name(),
+                'mark_1': nota.NOTA_VALOR1,
+                'mark_2': nota.NOTA_VALOR2,
+                'mark_3': nota.NOTA_VALOR3,
+                'mark_4': nota.NOTA_VALOR4,
+                'mark_5': nota.NOTA_VALOR5,
+                'average': nota.average,
+            })
+        
+        context['curso'] = curso
+        context['student_data'] = student_data
+        return context
 
-    if request.method == 'POST':
-        # Guardar las notas enviadas por el formulario
-        for estudiante in estudiantes:
-            valor_nota = request.POST.get(f'nota_{estudiante.PEPE_ID}')
-            descripcion_nota = request.POST.get(f'descripcion_{estudiante.PEPE_ID}')
-            if valor_nota:
-                nota = Notas(
-                    NOTA_VALOR=valor_nota,
-                    NOTA_DESCRIPCION=descripcion_nota,
-                    NOTA_PEPE_ID=estudiante,
-                    NOTA_CURS_ID=curso
-                )
-                nota.save()
-        return redirect('lista_notas')
+# Actualizar notas de alumnos
+class UpdateNota(UpdateView):
+    model = Notas
+    fields = ['NOTA_VALOR1', 'NOTA_VALOR2', 'NOTA_VALOR3', 'NOTA_VALOR4', 'NOTA_VALOR5']
+    template_name = 'UpdateNota.html'
 
-    context = {
-        'asignatura': asignatura,
-        'curso': curso,
-        'estudiantes': estudiantes,
-    }
+    def get_success_url(self):
+        return reverse_lazy('poner_notas', kwargs={'curso_id': self.object.NOTA_CURS_ID.CURS_ID})
 
-    return render(request, 'notas/poner_nota.html', context)
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return redirect(self.get_success_url())
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        nota = self.get_object()
+        context['curso'] = nota.NOTA_CURS_ID.CURS_NOMBRE  # Asegúrate de que este es el campo que deseas mostrar
+        context['nombre_estudiante'] = nota.NOTA_PEPE_ID.personas.get_full_name()  # Asegúrate de que 'personas' esté correcto
+        return context
 
-#ver notas
-def lista_notas(request):
-    notas = Notas.objects.all()
-
-    context = {
-        'notas': notas,
-    }
-    return render(request, 'notas/lista_notas.html', context)
-
-
-
-
-def ver_notas_asignatura(request, asignatura_id):
-    # Obtener la asignatura
-    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
-
-    # Obtener las notas asociadas al curso de la asignatura
-    notas = Notas.objects.filter(NOTA_CURS_ID=asignatura.ASI_CURS_ID).select_related('NOTA_PEPE_ID')
-
-    context = {
-        'asignatura': asignatura,
-        'notas': notas,
-    }
-
-    return render(request, 'notas/lista_notas.html', context)
+    def get_object(self, queryset=None):
+        mark_id = self.kwargs['mark_id']
+        return get_object_or_404(Notas, id=mark_id)
