@@ -45,8 +45,7 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'muro',
-    'notas'
-]
+    'notas',]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -75,6 +74,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins':  [
+                'core.templatetags.custom_filters',
+            ]
         },
     },
 ]
@@ -89,7 +91,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
         'NAME': '127.0.0.1:1521/xepdb1',
-        'USER': 'usuario5',
+        'USER': 'usuario8',
         'PASSWORD': 'contra',
         'TEST': {
             'USER': 'default_test',
