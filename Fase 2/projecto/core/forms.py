@@ -67,4 +67,8 @@ class NotasForm(forms.ModelForm):
             'NOTA_DESCRIPCION': forms.Textarea(attrs={'rows': 3}),
         }   
 
+class NotaEditForm(forms.ModelForm):
+    class Meta:
+        model = Notas
+        fields = ['NOTA_VALOR', 'NOTA_DESCRIPCION']
 

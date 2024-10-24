@@ -6,7 +6,7 @@ from accounts.models import PersonasPerfiles, Cursos, Asignaturas
 class Notas(models.Model):
     NOTA_ID = models.AutoField(primary_key=True)
     NOTA_VALOR = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Nota')
-    NOTA_FECHACREACION = models.DateField(auto_now_add=True, verbose_name='Fecha de Creación')
+    NOTA_FECHACREACION = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
     NOTA_DESCRIPCION = models.TextField(max_length=255, null=True, blank=True, verbose_name='Descripción')
     # Relaciones
     NOTA_PEPE_ID = models.ForeignKey(PersonasPerfiles, on_delete=models.CASCADE, verbose_name='Alumno')

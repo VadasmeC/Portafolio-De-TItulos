@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <div class="container mt-3">
+        <h2>Editar Nota</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a href="{% url 'ver_notas_asignatura' nota.NOTA_ASIG_ID.ASI_ID %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}

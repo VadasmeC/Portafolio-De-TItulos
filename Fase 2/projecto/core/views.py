@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
@@ -182,8 +182,12 @@ def ver_notas_asignatura(request, asignatura_id):
     # Obtener la asignatura
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
 
-    # Obtener las notas asociadas al curso de la asignatura
-    notas = Notas.objects.filter(NOTA_CURS_ID=asignatura.ASI_CURS_ID).select_related('NOTA_PEPE_ID')
+    # Obtener las notas asociadas al curso y asignatua por persona
+    notas = Notas.objects.filter(
+        NOTA_CURS_ID=asignatura.ASI_CURS_ID,  # Filtrar por curso
+        NOTA_ASIG_ID=asignatura               # Filtrar por asignatura
+    ).select_related('NOTA_PEPE_ID').order_by('NOTA_FECHACREACION')
+
 
     # Obtener estudiantes
     estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
@@ -197,16 +201,45 @@ def ver_notas_asignatura(request, asignatura_id):
 
     # Determinar el máximo número de notas
     max_notas = max(len(notas) for notas in notas_por_estudiante.values()) if notas_por_estudiante else 0
-    if max_notas is None:
-        max_notas = 0  # Asigna un valor por defecto
+
+    # Calculamos las celdas vacías para cada estudiante
+    celdas_vacias_por_estudiante = {
+        estudiante.PEPE_ID: max_notas - len(notas_por_estudiante.get(estudiante.PEPE_ID, []))
+        for estudiante in estudiantes
+    }
 
     context = {
         'asignatura': asignatura,
         'notas_por_estudiante': notas_por_estudiante,
         'estudiantes': estudiantes,
         'max_notas': max_notas,
+        'celdas_vacias_por_estudiante': celdas_vacias_por_estudiante,
     }
 
     return render(request, 'notas/lista_notas.html', context)
+#editar nota
+@login_required
+def editar_nota(request, nota_id):
+    # Obtener la nota que se quiere editar
+    nota = get_object_or_404(Notas, NOTA_ID=nota_id)
+
+    if request.method == 'POST':
+        # Crear un formulario con los datos enviados
+        form = NotaEditForm(request.POST, instance=nota)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La nota ha sido actualizada exitosamente.')
+            return redirect('ver_notas_asignatura', asignatura_id=nota.NOTA_ASIG_ID.ASI_ID)
+    else:
+        # Crear un formulario con los datos actuales de la nota
+        form = NotaEditForm(instance=nota)
+
+    context = {
+        'form': form,
+        'nota': nota,
+    }
+
+    return render(request, 'notas/editar_nota.html', context)
 
 
