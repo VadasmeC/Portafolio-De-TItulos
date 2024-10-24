@@ -1,31 +1,37 @@
 {% extends 'core/base.html' %}
+{% load static %}
+{% load custom_filters %}  <!-- Carga el template tag aquí -->
 
 {% block content %}
-<div class="container">
-    <h2>Notas de la Asignatura: {{ asignatura.ASI_NOMBRE }}</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre del Estudiante</th>
-                <th>Nota</th>
-                <th>Fecha</th>
+    <div class="container mt-3">
+        <h2>Listado de Notas - {{ asignatura.ASI_NOMBRE }}</h2>
 
-            </tr>
-        </thead>
-        <tbody>
-            {% for nota in notas %}
-            <tr>
-                <td>{{ nota.NOTA_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
-                <td>{{ nota.NOTA_VALOR }}</td>
-                <td>{{ nota.NOTA_FECHACREACION }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No hay notas disponibles para esta asignatura.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'lista_notas' %}" class="btn btn-secondary">Volver a la lista de notas</a>
-</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Estudiante</th>
+                    {% for i in max_notas|range_filter %}  <!-- Usa el nuevo filtro -->
+                        <th scope="col">Nota {{ forloop.counter }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                    <tr>
+                        <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                        {% for nota in notas_por_estudiante|get_item:estudiante.PEPE_ID %}
+                            <td>{{ nota.NOTA_VALOR }}</td>
+                        {% empty %}
+                            <td>No hay notas</td>
+                        {% endfor %}
+                        {% if notas_por_estudiante|get_item:estudiante.PEPE_ID|length < max_notas %}
+                            {% for j in max_notas|range_filter|length|get_item:estudiante.PEPE_ID|length %}
+                                <td></td>  <!-- Celdas vacías para notas que no existen -->
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

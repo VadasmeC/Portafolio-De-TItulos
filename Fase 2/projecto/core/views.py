@@ -151,10 +151,11 @@ def poner_nota(request, id):
                     NOTA_VALOR=valor_nota,
                     NOTA_DESCRIPCION=descripcion_nota,
                     NOTA_PEPE_ID=estudiante,
-                    NOTA_CURS_ID=curso
+                    NOTA_CURS_ID=curso,
+                    NOTA_ASIG_ID=asignatura,
                 )
                 nota.save()
-        return redirect('lista_notas')
+        return redirect('index_profesor')
 
     context = {
         'asignatura': asignatura,
@@ -184,9 +185,28 @@ def ver_notas_asignatura(request, asignatura_id):
     # Obtener las notas asociadas al curso de la asignatura
     notas = Notas.objects.filter(NOTA_CURS_ID=asignatura.ASI_CURS_ID).select_related('NOTA_PEPE_ID')
 
+    # Obtener estudiantes
+    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+
+    # Crear un diccionario de notas por estudiante
+    notas_por_estudiante = {}
+    for nota in notas:
+        if nota.NOTA_PEPE_ID.PEPE_ID not in notas_por_estudiante:
+            notas_por_estudiante[nota.NOTA_PEPE_ID.PEPE_ID] = []
+        notas_por_estudiante[nota.NOTA_PEPE_ID.PEPE_ID].append(nota)
+
+    # Determinar el máximo número de notas
+    max_notas = max(len(notas) for notas in notas_por_estudiante.values()) if notas_por_estudiante else 0
+    if max_notas is None:
+        max_notas = 0  # Asigna un valor por defecto
+
     context = {
         'asignatura': asignatura,
-        'notas': notas,
+        'notas_por_estudiante': notas_por_estudiante,
+        'estudiantes': estudiantes,
+        'max_notas': max_notas,
     }
 
     return render(request, 'notas/lista_notas.html', context)
+
+
