@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm, AsistenciaEditForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
@@ -11,6 +11,8 @@ from django.contrib import messages
 from accounts.models import Asignaturas, Perfiles, Cursos
 from muro.models import Publicaciones, PersonasPerfiles
 from notas.models import Notas
+from sino.models import Sino
+from asistencia.models import Asistencia
 
 
 
@@ -242,4 +244,92 @@ def editar_nota(request, nota_id):
 
     return render(request, 'notas/editar_nota.html', context)
 
+@login_required
+def registrar_asistencia(request, asignatura_id):
+    asignatura = Asignaturas.objects.get(ASI_ID=asignatura_id)
+    curso = asignatura.ASI_CURS_ID
+    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=curso)
 
+    if request.method == 'POST':
+            # Opciones de presente/ausente
+            presente_opcion = Sino.objects.get(SINO_ESTADO='True')
+            ausente_opcion = Sino.objects.get(SINO_ESTADO='False')
+
+            for estudiante in estudiantes:
+                asistencia_valor = request.POST.get(f'asistencia_{estudiante.PEPE_ID}')
+                certificado_valor = request.POST.get(f'certificado_{estudiante.PEPE_ID}', False)
+                # Crear un nuevo registro de asistencia
+                Asistencia.objects.create(
+                ASIS_FECHA=request.POST.get('fecha'),
+                ASIS_SINO_PRESENTE=presente_opcion if asistencia_valor == 'presente' else ausente_opcion,
+                ASIS_SINO_PRESENTACERTIFICADO=presente_opcion if certificado_valor else ausente_opcion,
+                ASIS_CURS_ID=curso,
+                ASIS_PEPE_ID=estudiante,
+                ASIS_ASIG_ID=asignatura,
+            )
+        
+            return redirect('index_profesor')
+
+
+    context = {
+        'asignatura': asignatura,
+        'curso': curso,
+        'estudiantes': estudiantes,
+    }
+    return render(request, 'asistencia/registrar_asistencia.html', context)
+
+
+def ver_asistencia(request, asignatura_id):
+    # Obtener la asignatura
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
+
+    # Obtener las asistencias asociadas al curso y asignatura
+    asistencias = Asistencia.objects.filter(
+        ASIS_CURS_ID=asignatura.ASI_CURS_ID,
+        ASIS_ASIG_ID=asignatura.ASI_ID
+    ).select_related('ASIS_PEPE_ID', 'ASIS_SINO_PRESENTE')
+
+    # Obtener estudiantes del curso
+    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+
+    # Crear un diccionario de asistencias por estudiante
+    asistencia_por_estudiante = {}
+    fechas_unicas = sorted({asistencia.ASIS_FECHA for asistencia in asistencias})
+
+    for asistencia in asistencias:
+        if asistencia.ASIS_PEPE_ID.PEPE_ID not in asistencia_por_estudiante:
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID] = {}
+        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID][asistencia.ASIS_FECHA] = asistencia
+
+    context = {
+        'asignatura': asignatura,
+        'asistencia_por_estudiante': asistencia_por_estudiante,
+        'estudiantes': estudiantes,
+        'fechas_unicas': fechas_unicas,
+    }
+
+    return render(request, 'asistencia/ver_asistencia.html', context)
+
+@login_required
+def editar_asistencia(request, asistencia_id):
+    # Obtener la asistencia que se quiere editar
+    asistencia = get_object_or_404(Asistencia, ASIS_ID=asistencia_id)
+
+    if request.method == 'POST':
+        # Crear un formulario con los datos enviados
+        form = AsistenciaEditForm(request.POST, instance=asistencia)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La asistencia ha sido actualizada exitosamente.')
+            return redirect('ver_asistencia', asignatura_id=asistencia.ASIS_ASIG_ID.ASI_ID)  # Redirigir a la vista de asistencia después de guardar
+    else:
+        # Crear un formulario con los datos actuales de la asistencia
+        form = AsistenciaEditForm(instance=asistencia)
+
+    context = {
+        'form': form,
+        'asistencia': asistencia,
+    }
+
+    return render(request, 'asistencia/editar_asistencia.html', context)

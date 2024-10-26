@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Asistencia - {{ asignatura.ASI_NOMBRE }}</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                {% for fecha in fechas_unicas %}
+                    <th>{{ fecha|date:"d/m" }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for estudiante in estudiantes %}
+            <tr>
+                <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                {% for fecha in fechas_unicas %}
+                    {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID|get_item:fecha %}
+                        <td>
+                            {% if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True" %}
+                                Presente  <a href="{% url 'editar_asistencia' asistencia.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>   
+                            {% else %}
+                                Ausente <a href="{% url 'editar_asistencia' asistencia.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>   
+                            {% endif %}
+                        </td>
+                    {% endwith %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
