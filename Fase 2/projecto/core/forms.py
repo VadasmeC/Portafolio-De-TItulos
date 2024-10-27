@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from accounts.models import Personas, PersonasPerfiles
 from muro.models import Publicaciones
 from notas.models import Notas
+from asistencia.models import Asistencia
 
 #Formulario registro de personas
 class CustomUserCreationForm(UserCreationForm):
@@ -66,5 +67,15 @@ class NotasForm(forms.ModelForm):
             'NOTA_VALOR': forms.NumberInput(attrs={'min': 1, 'max': 7}),
             'NOTA_DESCRIPCION': forms.Textarea(attrs={'rows': 3}),
         }   
+
+class NotaEditForm(forms.ModelForm):
+    class Meta:
+        model = Notas
+        fields = ['NOTA_VALOR', 'NOTA_DESCRIPCION']
+
+class AsistenciaEditForm(forms.ModelForm):
+    class Meta:
+        model = Asistencia
+        fields = ['ASIS_SINO_PRESENTE', 'ASIS_SINO_PRESENTACERTIFICADO']
 
 

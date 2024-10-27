@@ -9,9 +9,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Estudiante</th>
-                    {% for i in max_notas|range_filter %}  <!-- Usa el nuevo filtro -->
-                        <th scope="col">Nota {{ forloop.counter }}</th>
+                    <th>Estudiante</th>
+                    {% for i in max_notas|range_filter %}
+                        <th>Nota {{ forloop.counter }}</th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -19,16 +19,20 @@
                 {% for estudiante in estudiantes %}
                     <tr>
                         <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+
                         {% for nota in notas_por_estudiante|get_item:estudiante.PEPE_ID %}
-                            <td>{{ nota.NOTA_VALOR }}</td>
-                        {% empty %}
-                            <td>No hay notas</td>
+                            <td>
+                                {{ nota.NOTA_VALOR }}
+                                <!-- Botón para editar la nota -->
+                                <a href="{% url 'editar_nota' nota.NOTA_ID %}" class="btn btn-sm btn-warning">
+                                    Editar
+                                </a>
+                            </td>
                         {% endfor %}
-                        {% if notas_por_estudiante|get_item:estudiante.PEPE_ID|length < max_notas %}
-                            {% for j in max_notas|range_filter|length|get_item:estudiante.PEPE_ID|length %}
-                                <td></td>  <!-- Celdas vacías para notas que no existen -->
-                            {% endfor %}
-                        {% endif %}
+
+                        {% for i in celdas_vacias_por_estudiante|get_item:estudiante.PEPE_ID|range_filter %}
+                            <td></td>
+                        {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>

@@ -42,6 +42,7 @@ class Cursos(models.Model):
 class PersonasPerfiles(models.Model):
 	PEPE_ID = models.AutoField(primary_key=True)
 	PEPE_FECHACREACION = models.DateField(auto_now_add=True, verbose_name='Fecha de Creación')
+	#relaciones
 	PEPE_PERF_ID = models.ForeignKey(Perfiles, on_delete=models.CASCADE, related_name='personas_perfiles')
 	PEPE_PERS_ID = models.ForeignKey(Personas, on_delete=models.CASCADE, related_name='perfiles')
 	PEPE_CURS_ID = models.ForeignKey(Cursos, on_delete=models.CASCADE,null=True, related_name='cursos')
@@ -59,6 +60,7 @@ class PersonasPerfiles(models.Model):
 class Asignaturas(models.Model):
     ASI_ID = models.AutoField(primary_key=True)
     ASI_NOMBRE = models.CharField(max_length=100, verbose_name='Nombre de la Asignatura')
+	#relaciones
     ASI_CURS_ID = models.ForeignKey(Cursos, on_delete=models.CASCADE, verbose_name='Curso',related_name='asignaturas')
 
     class Meta:

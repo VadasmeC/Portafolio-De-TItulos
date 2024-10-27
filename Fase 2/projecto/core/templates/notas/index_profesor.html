@@ -19,10 +19,20 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ asignatura.ASI_NOMBRE }}</td>
                     <td>
+                        <!-- Botón para registrar notas -->
                         <a href="{% url 'poner_nota' asignatura.ASI_ID %}" class="btn btn-primary btn-sm">Poner Notas</a>
                     </td>
                     <td>
+                        <!-- Botón para ver registro notas -->
                         <a href="{% url 'ver_notas_asignatura' asignatura.ASI_ID %}" class="btn btn-primary">Ver Notas</a>
+                    </td>
+                    <td>
+                        <!-- Botón para registrar asistencia -->
+                    <a href="{% url 'registrar_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-secondary">Registrar Asistencia</a>
+                    </td>
+                    <td>
+                        <!-- Botón para ver registro asistencia -->
+                    <a href="{% url 'ver_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-secondary">Ver asistencia</a>
                     </td>
                 </tr>
                 {% endfor %}

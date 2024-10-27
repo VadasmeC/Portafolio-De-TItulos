@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm, AsistenciaEditForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
@@ -11,6 +11,8 @@ from django.contrib import messages
 from accounts.models import Asignaturas, Perfiles, Cursos
 from muro.models import Publicaciones, PersonasPerfiles
 from notas.models import Notas
+from sino.models import Sino
+from asistencia.models import Asistencia
 
 
 
@@ -182,8 +184,12 @@ def ver_notas_asignatura(request, asignatura_id):
     # Obtener la asignatura
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
 
-    # Obtener las notas asociadas al curso de la asignatura
-    notas = Notas.objects.filter(NOTA_CURS_ID=asignatura.ASI_CURS_ID).select_related('NOTA_PEPE_ID')
+    # Obtener las notas asociadas al curso y asignatua por persona
+    notas = Notas.objects.filter(
+        NOTA_CURS_ID=asignatura.ASI_CURS_ID,  # Filtrar por curso
+        NOTA_ASIG_ID=asignatura               # Filtrar por asignatura
+    ).select_related('NOTA_PEPE_ID').order_by('NOTA_FECHACREACION')
+
 
     # Obtener estudiantes
     estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
@@ -197,16 +203,157 @@ def ver_notas_asignatura(request, asignatura_id):
 
     # Determinar el máximo número de notas
     max_notas = max(len(notas) for notas in notas_por_estudiante.values()) if notas_por_estudiante else 0
-    if max_notas is None:
-        max_notas = 0  # Asigna un valor por defecto
+
+    # Calculamos las celdas vacías para cada estudiante
+    celdas_vacias_por_estudiante = {
+        estudiante.PEPE_ID: max_notas - len(notas_por_estudiante.get(estudiante.PEPE_ID, []))
+        for estudiante in estudiantes
+    }
 
     context = {
         'asignatura': asignatura,
         'notas_por_estudiante': notas_por_estudiante,
         'estudiantes': estudiantes,
         'max_notas': max_notas,
+        'celdas_vacias_por_estudiante': celdas_vacias_por_estudiante,
     }
 
     return render(request, 'notas/lista_notas.html', context)
+#editar nota
+@login_required
+def editar_nota(request, nota_id):
+    # Obtener la nota que se quiere editar
+    nota = get_object_or_404(Notas, NOTA_ID=nota_id)
+
+    if request.method == 'POST':
+        # Crear un formulario con los datos enviados
+        form = NotaEditForm(request.POST, instance=nota)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La nota ha sido actualizada exitosamente.')
+            return redirect('ver_notas_asignatura', asignatura_id=nota.NOTA_ASIG_ID.ASI_ID)
+    else:
+        # Crear un formulario con los datos actuales de la nota
+        form = NotaEditForm(instance=nota)
+
+    context = {
+        'form': form,
+        'nota': nota,
+    }
+
+    return render(request, 'notas/editar_nota.html', context)
+
+@login_required
+def registrar_asistencia(request, asignatura_id):
+    asignatura = Asignaturas.objects.get(ASI_ID=asignatura_id)
+    curso = asignatura.ASI_CURS_ID
+    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=curso)
+
+    if request.method == 'POST':
+            # Opciones de presente/ausente
+            presente_opcion = Sino.objects.get(SINO_ESTADO='True')
+            ausente_opcion = Sino.objects.get(SINO_ESTADO='False')
+
+            for estudiante in estudiantes:
+                asistencia_valor = request.POST.get(f'asistencia_{estudiante.PEPE_ID}')
+                certificado_valor = request.POST.get(f'certificado_{estudiante.PEPE_ID}', False)
+                # Crear un nuevo registro de asistencia
+                Asistencia.objects.create(
+                ASIS_FECHA=request.POST.get('fecha'),
+                ASIS_SINO_PRESENTE=presente_opcion if asistencia_valor == 'presente' else ausente_opcion,
+                ASIS_SINO_PRESENTACERTIFICADO=presente_opcion if certificado_valor else ausente_opcion,
+                ASIS_CURS_ID=curso,
+                ASIS_PEPE_ID=estudiante,
+                ASIS_ASIG_ID=asignatura,
+            )
+        
+            return redirect('index_profesor')
 
 
+    context = {
+        'asignatura': asignatura,
+        'curso': curso,
+        'estudiantes': estudiantes,
+    }
+    return render(request, 'asistencia/registrar_asistencia.html', context)
+
+
+def ver_asistencia(request, asignatura_id):
+    # Obtener la asignatura
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
+
+    # Obtener las asistencias asociadas al curso y asignatura
+    asistencias = Asistencia.objects.filter(
+        ASIS_CURS_ID=asignatura.ASI_CURS_ID,
+        ASIS_ASIG_ID=asignatura.ASI_ID
+    ).select_related('ASIS_PEPE_ID', 'ASIS_SINO_PRESENTE')
+
+    # Obtener estudiantes del curso
+    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+
+    # Crear un diccionario de asistencias por estudiante
+    asistencia_por_estudiante = {}
+    fechas_unicas = sorted({asistencia.ASIS_FECHA for asistencia in asistencias})
+
+    for asistencia in asistencias:
+        if asistencia.ASIS_PEPE_ID.PEPE_ID not in asistencia_por_estudiante:
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID] = {
+                'total_asistencias': 0,
+                'total_dias': 0,
+                'asistencias': {}
+            }
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID][asistencia.ASIS_FECHA] = asistencia
+
+
+        # Contar las asistencias
+        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO  == "True" :  # Verifica si el estudiante está presente
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_asistencias'] += 1
+        
+        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_dias'] += 1
+        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['asistencias'][asistencia.ASIS_FECHA] = asistencia
+
+    # Calcular el porcentaje de asistencia para cada estudiante
+    for estudiante_id, datos in asistencia_por_estudiante.items():
+        if datos['total_dias'] > 0:
+            datos['porcentaje_asistencia'] = (datos['total_asistencias'] / datos['total_dias']) * 100
+        else:
+            datos['porcentaje_asistencia'] = 0  # Evitar división por cero
+
+    context = {
+        'asignatura': asignatura,
+        'asistencia_por_estudiante': asistencia_por_estudiante,
+        'estudiantes': estudiantes,
+        'fechas_unicas': fechas_unicas,
+    }
+
+    return render(request, 'asistencia/ver_asistencia.html', context)
+
+
+
+
+
+
+@login_required
+def editar_asistencia(request, asistencia_id):
+    # Obtener la asistencia que se quiere editar
+    asistencia = get_object_or_404(Asistencia, ASIS_ID=asistencia_id)
+
+    if request.method == 'POST':
+        # Crear un formulario con los datos enviados
+        form = AsistenciaEditForm(request.POST, instance=asistencia)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La asistencia ha sido actualizada exitosamente.')
+            return redirect('ver_asistencia', asignatura_id=asistencia.ASIS_ASIG_ID.ASI_ID)  # Redirigir a la vista de asistencia después de guardar
+    else:
+        # Crear un formulario con los datos actuales de la asistencia
+        form = AsistenciaEditForm(instance=asistencia)
+
+    context = {
+        'form': form,
+        'asistencia': asistencia,
+    }
+
+    return render(request, 'asistencia/editar_asistencia.html', context)

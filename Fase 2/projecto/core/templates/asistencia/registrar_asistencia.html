@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Registrar Asistencia - {{ asignatura.ASI_NOMBRE }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Presente</th>
+                    <th>Justificado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                <tr>
+                    <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                    <!-- Checkbox para 'Presente' -->
+                    <td>
+                        <input type="radio" name="asistencia_{{ estudiante.PEPE_ID }}" value="presente">
+                    </td>
+                    <!-- Checkbox para 'Justificado' -->
+                    <td>
+                        <input type="checkbox" name="certificado_{{ estudiante.PEPE_ID }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Guardar Asistencia</button>
+    </form>
+</div>
+{% endblock %}

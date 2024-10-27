@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <h2>Editar Asistencia</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+    <a href="{% url 'ver_asistencia' asistencia.ASIS_ASIG_ID.ASI_ID %}">Volver a la lista de asistencia</a>
+{% endblock %}
