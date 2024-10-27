@@ -298,8 +298,27 @@ def ver_asistencia(request, asignatura_id):
 
     for asistencia in asistencias:
         if asistencia.ASIS_PEPE_ID.PEPE_ID not in asistencia_por_estudiante:
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID] = {}
-        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID][asistencia.ASIS_FECHA] = asistencia
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID] = {
+                'total_asistencias': 0,
+                'total_dias': 0,
+                'asistencias': {}
+            }
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID][asistencia.ASIS_FECHA] = asistencia
+
+
+        # Contar las asistencias
+        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO  == "True" :  # Verifica si el estudiante está presente
+            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_asistencias'] += 1
+        
+        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_dias'] += 1
+        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['asistencias'][asistencia.ASIS_FECHA] = asistencia
+
+    # Calcular el porcentaje de asistencia para cada estudiante
+    for estudiante_id, datos in asistencia_por_estudiante.items():
+        if datos['total_dias'] > 0:
+            datos['porcentaje_asistencia'] = (datos['total_asistencias'] / datos['total_dias']) * 100
+        else:
+            datos['porcentaje_asistencia'] = 0  # Evitar división por cero
 
     context = {
         'asignatura': asignatura,
@@ -309,6 +328,11 @@ def ver_asistencia(request, asignatura_id):
     }
 
     return render(request, 'asistencia/ver_asistencia.html', context)
+
+
+
+
+
 
 @login_required
 def editar_asistencia(request, asistencia_id):
