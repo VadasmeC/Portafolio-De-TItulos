@@ -118,6 +118,27 @@ def ver_publicaciones(request):
     publicaciones = Publicaciones.objects.all().order_by('-PUBL_FECHACREACION')
     return render(request, 'muro/muro.html', {'publicaciones': publicaciones})
 
+#editar publicaciones 
+@login_required
+def editar_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicaciones, PUBL_ID=publicacion_id)
+
+    # Asegurar que solo el autor pueda editar la publicación
+    if request.user.personas.perfiles.first() != publicacion.PUBL_PEPE_ID:
+        messages.error(request, "No tienes permiso para editar esta publicación.")
+        return redirect('muro')
+
+    if request.method == 'POST':
+        form = PublicacionForm(request.POST, request.FILES, instance=publicacion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "La publicación se ha actualizado correctamente.")
+            return redirect('muro')
+    else:
+        form = PublicacionForm(instance=publicacion)
+
+    return render(request, 'muro/editar_publicacion.html', {'form': form, 'publicacion': publicacion})
+
 #vista para index_profesor
 @login_required
 def ver_asignaturas(request):
@@ -181,30 +202,35 @@ def lista_notas(request):
 
 
 def ver_notas_asignatura(request, asignatura_id):
-    # Obtener la asignatura
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
 
-    # Obtener las notas asociadas al curso y asignatua por persona
+    # Obtener las notas asociadas al curso y asignatura por persona
     notas = Notas.objects.filter(
-        NOTA_CURS_ID=asignatura.ASI_CURS_ID,  # Filtrar por curso
-        NOTA_ASIG_ID=asignatura               # Filtrar por asignatura
+        NOTA_CURS_ID=asignatura.ASI_CURS_ID,
+        NOTA_ASIG_ID=asignatura
     ).select_related('NOTA_PEPE_ID').order_by('NOTA_FECHACREACION')
-
 
     # Obtener estudiantes
     estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
 
-    # Crear un diccionario de notas por estudiante
+    # Crear un diccionario de notas y promedio por estudiante
     notas_por_estudiante = {}
+    promedio_por_estudiante = {}
+
     for nota in notas:
-        if nota.NOTA_PEPE_ID.PEPE_ID not in notas_por_estudiante:
-            notas_por_estudiante[nota.NOTA_PEPE_ID.PEPE_ID] = []
-        notas_por_estudiante[nota.NOTA_PEPE_ID.PEPE_ID].append(nota)
+        estudiante_id = nota.NOTA_PEPE_ID.PEPE_ID
+        if estudiante_id not in notas_por_estudiante:
+            notas_por_estudiante[estudiante_id] = []
+        notas_por_estudiante[estudiante_id].append(nota)
+
+    # Calcular el promedio de notas por estudiante
+    for estudiante_id, notas in notas_por_estudiante.items():
+        promedio_por_estudiante[estudiante_id] = sum(nota.NOTA_VALOR for nota in notas) / len(notas) if notas else 0
 
     # Determinar el máximo número de notas
     max_notas = max(len(notas) for notas in notas_por_estudiante.values()) if notas_por_estudiante else 0
 
-    # Calculamos las celdas vacías para cada estudiante
+    # Calcular celdas vacías para cada estudiante
     celdas_vacias_por_estudiante = {
         estudiante.PEPE_ID: max_notas - len(notas_por_estudiante.get(estudiante.PEPE_ID, []))
         for estudiante in estudiantes
@@ -213,12 +239,15 @@ def ver_notas_asignatura(request, asignatura_id):
     context = {
         'asignatura': asignatura,
         'notas_por_estudiante': notas_por_estudiante,
+        'promedio_por_estudiante': promedio_por_estudiante,
         'estudiantes': estudiantes,
         'max_notas': max_notas,
         'celdas_vacias_por_estudiante': celdas_vacias_por_estudiante,
     }
 
     return render(request, 'notas/lista_notas.html', context)
+
+
 #editar nota
 @login_required
 def editar_nota(request, nota_id):
