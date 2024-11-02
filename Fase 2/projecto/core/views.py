@@ -113,10 +113,30 @@ def crear_publicacion(request):
     return render(request, 'muro/crear_publicacion.html', {'form': form})
 
 #vista para ver publicaciones
-@login_required
 def ver_publicaciones(request):
     publicaciones = Publicaciones.objects.all().order_by('-PUBL_FECHACREACION')
     return render(request, 'muro/muro.html', {'publicaciones': publicaciones})
+
+#editar publicaciones 
+@login_required
+def editar_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicaciones, PUBL_ID=publicacion_id)
+
+    # Asegurar que solo el autor pueda editar la publicación
+    if request.user.personas.perfiles.first() != publicacion.PUBL_PEPE_ID:
+        messages.error(request, "No tienes permiso para editar esta publicación.")
+        return redirect('muro')
+
+    if request.method == 'POST':
+        form = PublicacionForm(request.POST, request.FILES, instance=publicacion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "La publicación se ha actualizado correctamente.")
+            return redirect('muro')
+    else:
+        form = PublicacionForm(instance=publicacion)
+
+    return render(request, 'muro/editar_publicacion.html', {'form': form, 'publicacion': publicacion})
 
 #vista para index_profesor
 @login_required
@@ -181,30 +201,35 @@ def lista_notas(request):
 
 
 def ver_notas_asignatura(request, asignatura_id):
-    # Obtener la asignatura
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
 
-    # Obtener las notas asociadas al curso y asignatua por persona
+    # Obtener las notas asociadas al curso y asignatura por persona
     notas = Notas.objects.filter(
-        NOTA_CURS_ID=asignatura.ASI_CURS_ID,  # Filtrar por curso
-        NOTA_ASIG_ID=asignatura               # Filtrar por asignatura
+        NOTA_CURS_ID=asignatura.ASI_CURS_ID,
+        NOTA_ASIG_ID=asignatura
     ).select_related('NOTA_PEPE_ID').order_by('NOTA_FECHACREACION')
-
 
     # Obtener estudiantes
     estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
 
-    # Crear un diccionario de notas por estudiante
+    # Crear un diccionario de notas y promedio por estudiante
     notas_por_estudiante = {}
+    promedio_por_estudiante = {}
+
     for nota in notas:
-        if nota.NOTA_PEPE_ID.PEPE_ID not in notas_por_estudiante:
-            notas_por_estudiante[nota.NOTA_PEPE_ID.PEPE_ID] = []
-        notas_por_estudiante[nota.NOTA_PEPE_ID.PEPE_ID].append(nota)
+        estudiante_id = nota.NOTA_PEPE_ID.PEPE_ID
+        if estudiante_id not in notas_por_estudiante:
+            notas_por_estudiante[estudiante_id] = []
+        notas_por_estudiante[estudiante_id].append(nota)
+
+    # Calcular el promedio de notas por estudiante
+    for estudiante_id, notas in notas_por_estudiante.items():
+        promedio_por_estudiante[estudiante_id] = sum(nota.NOTA_VALOR for nota in notas) / len(notas) if notas else 0
 
     # Determinar el máximo número de notas
     max_notas = max(len(notas) for notas in notas_por_estudiante.values()) if notas_por_estudiante else 0
 
-    # Calculamos las celdas vacías para cada estudiante
+    # Calcular celdas vacías para cada estudiante
     celdas_vacias_por_estudiante = {
         estudiante.PEPE_ID: max_notas - len(notas_por_estudiante.get(estudiante.PEPE_ID, []))
         for estudiante in estudiantes
@@ -213,12 +238,15 @@ def ver_notas_asignatura(request, asignatura_id):
     context = {
         'asignatura': asignatura,
         'notas_por_estudiante': notas_por_estudiante,
+        'promedio_por_estudiante': promedio_por_estudiante,
         'estudiantes': estudiantes,
         'max_notas': max_notas,
         'celdas_vacias_por_estudiante': celdas_vacias_por_estudiante,
     }
 
     return render(request, 'notas/lista_notas.html', context)
+
+
 #editar nota
 @login_required
 def editar_nota(request, nota_id):
@@ -286,7 +314,7 @@ def ver_asistencia(request, asignatura_id):
     # Obtener las asistencias asociadas al curso y asignatura
     asistencias = Asistencia.objects.filter(
         ASIS_CURS_ID=asignatura.ASI_CURS_ID,
-        ASIS_ASIG_ID=asignatura.ASI_ID
+        ASIS_ASIG_ID=asignatura
     ).select_related('ASIS_PEPE_ID', 'ASIS_SINO_PRESENTE')
 
     # Obtener estudiantes del curso
@@ -296,22 +324,27 @@ def ver_asistencia(request, asignatura_id):
     asistencia_por_estudiante = {}
     fechas_unicas = sorted({asistencia.ASIS_FECHA for asistencia in asistencias})
 
-    for asistencia in asistencias:
-        if asistencia.ASIS_PEPE_ID.PEPE_ID not in asistencia_por_estudiante:
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID] = {
-                'total_asistencias': 0,
-                'total_dias': 0,
-                'asistencias': {}
-            }
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID][asistencia.ASIS_FECHA] = asistencia
+    for estudiante in estudiantes:
+        estudiante_id = estudiante.PEPE_ID
+        asistencia_por_estudiante[estudiante_id] = {
+            'total_asistencias': 0,
+            'total_dias': len(fechas_unicas),  # Iniciar con el total de días igual al número de fechas únicas
+            'asistencias': {}
+        }
+        
+        # Inicializar cada fecha con una asistencia "ausente" por defecto
+        for fecha in fechas_unicas:
+            asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = None  # Esto indica "N/A" en el template si no hay asistencia real
 
+    # Rellenar las asistencias reales
+    for asistencia in asistencias:
+        estudiante_id = asistencia.ASIS_PEPE_ID.PEPE_ID
+        fecha = asistencia.ASIS_FECHA
+        asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = asistencia
 
         # Contar las asistencias
-        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO  == "True" :  # Verifica si el estudiante está presente
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_asistencias'] += 1
-        
-        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_dias'] += 1
-        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['asistencias'][asistencia.ASIS_FECHA] = asistencia
+        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True":  # Verifica si el estudiante está presente
+            asistencia_por_estudiante[estudiante_id]['total_asistencias'] += 1
 
     # Calcular el porcentaje de asistencia para cada estudiante
     for estudiante_id, datos in asistencia_por_estudiante.items():
@@ -328,6 +361,8 @@ def ver_asistencia(request, asignatura_id):
     }
 
     return render(request, 'asistencia/ver_asistencia.html', context)
+
+
 
 
 

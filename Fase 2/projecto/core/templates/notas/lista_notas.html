@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% load custom_filters %}  <!-- Carga el template tag aquí -->
+{% load custom_filters %}
 
 {% block content %}
     <div class="container mt-3">
@@ -13,6 +13,7 @@
                     {% for i in max_notas|range_filter %}
                         <th>Nota {{ forloop.counter }}</th>
                     {% endfor %}
+                    <th>Promedio</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,19 +21,26 @@
                     <tr>
                         <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
 
+                        <!-- Mostrar las notas del estudiante con botón de edición -->
                         {% for nota in notas_por_estudiante|get_item:estudiante.PEPE_ID %}
                             <td>
                                 {{ nota.NOTA_VALOR }}
-                                <!-- Botón para editar la nota -->
-                                <a href="{% url 'editar_nota' nota.NOTA_ID %}" class="btn btn-sm btn-warning">
-                                    Editar
-                                </a>
+                                {% if nota.NOTA_ID %}
+                                    <!-- Botón para editar la nota -->
+                                    <a href="{% url 'editar_nota' nota.NOTA_ID %}" class="btn btn-sm btn-warning">
+                                        Editar
+                                    </a>
+                                {% endif %}
                             </td>
                         {% endfor %}
 
+                        <!-- Rellenar con celdas vacías si faltan notas -->
                         {% for i in celdas_vacias_por_estudiante|get_item:estudiante.PEPE_ID|range_filter %}
                             <td></td>
                         {% endfor %}
+
+                        <!-- Mostrar el promedio del estudiante -->
+                        <td>{{ promedio_por_estudiante|get_item:estudiante.PEPE_ID|floatformat:2 }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

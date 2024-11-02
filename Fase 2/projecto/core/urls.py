@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, lista_notas, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia
+from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, lista_notas, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion
 
 urlpatterns = [
     path('', home, name='home'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', exit, name='exit'),
     path('crear-publicacion/', crear_publicacion, name='crear publicacion'),
     path('muro/', ver_publicaciones, name='muro'),
+    path('muro/editar/<int:publicacion_id>/', editar_publicacion, name='editar_publicacion'),
     path('ver_asignaturas/', ver_asignaturas, name='index_profesor'),
     path('crear_nota/<id>', poner_nota, name='poner_nota'),
     path('lista_notas/', lista_notas, name='lista_notas'),
