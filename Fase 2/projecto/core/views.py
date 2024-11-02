@@ -113,7 +113,6 @@ def crear_publicacion(request):
     return render(request, 'muro/crear_publicacion.html', {'form': form})
 
 #vista para ver publicaciones
-@login_required
 def ver_publicaciones(request):
     publicaciones = Publicaciones.objects.all().order_by('-PUBL_FECHACREACION')
     return render(request, 'muro/muro.html', {'publicaciones': publicaciones})
@@ -315,7 +314,7 @@ def ver_asistencia(request, asignatura_id):
     # Obtener las asistencias asociadas al curso y asignatura
     asistencias = Asistencia.objects.filter(
         ASIS_CURS_ID=asignatura.ASI_CURS_ID,
-        ASIS_ASIG_ID=asignatura.ASI_ID
+        ASIS_ASIG_ID=asignatura
     ).select_related('ASIS_PEPE_ID', 'ASIS_SINO_PRESENTE')
 
     # Obtener estudiantes del curso
@@ -325,22 +324,27 @@ def ver_asistencia(request, asignatura_id):
     asistencia_por_estudiante = {}
     fechas_unicas = sorted({asistencia.ASIS_FECHA for asistencia in asistencias})
 
-    for asistencia in asistencias:
-        if asistencia.ASIS_PEPE_ID.PEPE_ID not in asistencia_por_estudiante:
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID] = {
-                'total_asistencias': 0,
-                'total_dias': 0,
-                'asistencias': {}
-            }
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID][asistencia.ASIS_FECHA] = asistencia
+    for estudiante in estudiantes:
+        estudiante_id = estudiante.PEPE_ID
+        asistencia_por_estudiante[estudiante_id] = {
+            'total_asistencias': 0,
+            'total_dias': len(fechas_unicas),  # Iniciar con el total de días igual al número de fechas únicas
+            'asistencias': {}
+        }
+        
+        # Inicializar cada fecha con una asistencia "ausente" por defecto
+        for fecha in fechas_unicas:
+            asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = None  # Esto indica "N/A" en el template si no hay asistencia real
 
+    # Rellenar las asistencias reales
+    for asistencia in asistencias:
+        estudiante_id = asistencia.ASIS_PEPE_ID.PEPE_ID
+        fecha = asistencia.ASIS_FECHA
+        asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = asistencia
 
         # Contar las asistencias
-        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO  == "True" :  # Verifica si el estudiante está presente
-            asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_asistencias'] += 1
-        
-        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['total_dias'] += 1
-        asistencia_por_estudiante[asistencia.ASIS_PEPE_ID.PEPE_ID]['asistencias'][asistencia.ASIS_FECHA] = asistencia
+        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True":  # Verifica si el estudiante está presente
+            asistencia_por_estudiante[estudiante_id]['total_asistencias'] += 1
 
     # Calcular el porcentaje de asistencia para cada estudiante
     for estudiante_id, datos in asistencia_por_estudiante.items():
@@ -357,6 +361,8 @@ def ver_asistencia(request, asignatura_id):
     }
 
     return render(request, 'asistencia/ver_asistencia.html', context)
+
+
 
 
 

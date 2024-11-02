@@ -22,14 +22,20 @@
                 
                 {% for fecha in fechas_unicas %}
                     <td>
-                        {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID|get_item:fecha %}
-                            {% if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True" %}
-                                Presente <a href="{% url 'editar_asistencia' asistencia.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
+                        {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID|default_if_none:'' %}
+                            {% if asistencia.asistencias|get_item:fecha %}
+                                {% with registro=asistencia.asistencias|get_item:fecha %}
+                                    {% if registro.ASIS_SINO_PRESENTE.SINO_ESTADO == "True" %}
+                                        Presente <a href="{% url 'editar_asistencia' registro.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
+                                    {% else %}
+                                        Ausente <a href="{% url 'editar_asistencia' registro.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
+                                    {% endif %}
+                                {% endwith %}
                             {% else %}
-                                Ausente <a href="{% url 'editar_asistencia' asistencia.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
+                                N/A
                             {% endif %}
-                    </td>
                         {% endwith %}
+                    </td>
                 {% endfor %}
                 
                 <td>
