@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="perfil-container">
+    <div class="perfil-card">
+        <div class="perfil-foto">
+
+        </div>
+        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+        <div class="contacto-info">
+            <p><strong>Tarjeta de Contacto</strong></p>
+            <p>Fono: {{ user.personas.PERS_TELEFONO  }}</p>
+            <p>Rut: {{ user.personas.PERS_RUT  }}</p>
+            <p>Correo: {{ user.email }}</p>
+        </div>
+    </div>
+
+    <div class="perfil-descripcion">
+        <h3>Descripción</h3>
+        <p>...</p>
+        <div class="col-md-8">
+            <a href="{% url 'crear publicacion' %}" class="btn btn-sm btn-success">crear publicacion</a>
+            <a href="{% url 'index_profesor' %}" class="btn btn-sm btn-success">Mis cursos</a>
+            <a href="{% url 'lista_notas' %}" class="btn btn-sm btn-success">Ver notas</a>
+            <a href="{% url 'test' %}" class="btn btn-sm btn-success">Nuevo perfil</a>
+    
+    
+            <div class="dropdown">
+                <h2>Seleccione su perfil</h2>
+                <ul>
+                    {% for perfil_id, perfil_nombre, curso_nombre in perfiles_con_curso %}
+                      <li>
+                        <a href="#" class="seleccionar-perfil" data-perfil-id="{{ perfil_id }}" data-curso-id="{{ curso_nombre }}">
+                          {{ perfil_nombre }} - Curso: {{ curso_nombre }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="perfil-publicaciones">
+        <p>CANTIDAD DE PUBLICACIONES: pendiente</p>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelectorAll('.seleccionar-perfil').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+  
+        // Obtener el perfil y curso seleccionados
+        const perfilId = this.getAttribute('data-perfil-id');
+        const cursoId = this.getAttribute('data-curso-id');
+  
+        // Enviar la selección al servidor vía AJAX
+        fetch("{% url 'home' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+          body: JSON.stringify({
+            perfil_id: perfilId,
+            curso_id: cursoId,
+          })
+        }).then(response => response.json()).then(data => {
+          if (data.success) {
+            // Redirigir a la vista de asignaturas o donde desees
+            window.location.href = "{% url 'index_profesor' %}";
+          }
+        });
+      });
+    });
+  </script>
+
+{% endblock %}

@@ -52,6 +52,38 @@ def home(request):
 def test(request):
     return render(request, 'core/test.html')
 
+
+@login_required
+def perfil(request):
+        # Verificar si el usuario tiene un perfil de Persona
+    if hasattr(request.user, 'personas'):
+        persona = request.user.personas
+        # Obtener todos los perfiles de esa persona
+        perfiles = persona.perfiles.all()
+        
+        # Para cada perfil, obtener el nombre del perfil y el curso asociado
+        perfiles_con_curso = [(perfil.PEPE_ID, perfil.PEPE_PERF_ID.PERF_NOMBRE, perfil.PEPE_CURS_ID.CURS_NOMBRE) for perfil in perfiles]
+
+    else:
+        perfiles_con_curso = []
+
+    context = {
+        'perfiles_con_curso': perfiles_con_curso,
+    }
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        perfil_id = data.get('perfil_id')
+        curso_id = data.get('curso_id')
+
+        # Guardar la selección en la sesión del usuario
+        request.session['perfil_id'] = perfil_id
+        request.session['curso_id'] = curso_id
+
+        return JsonResponse({'success': True})
+
+    return render(request, 'core/perfil.html', context)
+
 def exit(request):
     logout(request)
     return redirect('home')
@@ -106,7 +138,7 @@ def crear_publicacion(request):
                 return redirect('crear publicacion')
             form.save()
             messages.success(request, 'La publicacion se a subido correctamente.')
-            return redirect('crear publicacion')
+            return redirect('muro')
     else:
         form = PublicacionForm()
 
