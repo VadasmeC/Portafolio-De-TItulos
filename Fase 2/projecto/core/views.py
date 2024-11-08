@@ -55,20 +55,26 @@ def test(request):
 
 @login_required
 def perfil(request):
-        # Verificar si el usuario tiene un perfil de Persona
+    # Inicializar variables
+    perfiles_con_curso = []
+    es_profesor = False
+
+    # Verificar si el usuario tiene un perfil de Persona
     if hasattr(request.user, 'personas'):
         persona = request.user.personas
         # Obtener todos los perfiles de esa persona
         perfiles = persona.perfiles.all()
         
         # Para cada perfil, obtener el nombre del perfil y el curso asociado
-        perfiles_con_curso = [(perfil.PEPE_ID, perfil.PEPE_PERF_ID.PERF_NOMBRE, perfil.PEPE_CURS_ID.CURS_NOMBRE) for perfil in perfiles]
-
-    else:
-        perfiles_con_curso = []
+        for perfil in perfiles:
+            perfiles_con_curso.append((perfil.PEPE_ID, perfil.PEPE_PERF_ID.PERF_NOMBRE, perfil.PEPE_CURS_ID.CURS_NOMBRE))
+            # Verificar si el perfil es de profesor
+            if perfil.PEPE_PERF_ID.PERF_ID == 1:
+                es_profesor = True
 
     context = {
         'perfiles_con_curso': perfiles_con_curso,
+        'es_profesor': es_profesor,
     }
 
     if request.method == 'POST':

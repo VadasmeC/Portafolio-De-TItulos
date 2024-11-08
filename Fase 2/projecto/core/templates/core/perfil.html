@@ -18,27 +18,27 @@
     <div class="perfil-descripcion">
         <h3>Descripción</h3>
         <p>...</p>
-        <div class="col-md-8">
-            <a href="{% url 'crear publicacion' %}" class="btn btn-sm btn-success">crear publicacion</a>
-            <a href="{% url 'index_profesor' %}" class="btn btn-sm btn-success">Mis cursos</a>
-            <a href="{% url 'lista_notas' %}" class="btn btn-sm btn-success">Ver notas</a>
-            <a href="{% url 'test' %}" class="btn btn-sm btn-success">Nuevo perfil</a>
-    
-    
-            <div class="dropdown">
-                <h2>Seleccione su perfil</h2>
-                <ul>
-                    {% for perfil_id, perfil_nombre, curso_nombre in perfiles_con_curso %}
-                      <li>
-                        <a href="#" class="seleccionar-perfil" data-perfil-id="{{ perfil_id }}" data-curso-id="{{ curso_nombre }}">
-                          {{ perfil_nombre }} - Curso: {{ curso_nombre }}
-                        </a>
-                      </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <div class="dropdown">
+          <h2>Seleccione su perfil</h2>
+          <ul>
+              {% for perfil_id, perfil_nombre, curso_nombre in perfiles_con_curso %}
+                <li>
+                  <a href="#" class="seleccionar-perfil" data-perfil-id="{{ perfil_id }}" data-curso-id="{{ curso_nombre }}">
+                    {{ perfil_nombre }} - Curso: {{ curso_nombre }}
+                  </a>
+                </li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
+        <div class="container mt-3">
+        {% if es_profesor %}
+        <p>Bienvenido, profesor. Tienes acceso a secciones especiales para profesores.</p>
+        <a href="{% url 'test' %}" class="btn btn-sm btn-success">Nuevo perfil</a>
+          {% else %}
+        <p>Bienvenido, usuario.</p>
+          {% endif %}
         </div>
-    </div>
 
     <div class="perfil-publicaciones">
         <p>CANTIDAD DE PUBLICACIONES: pendiente</p>
