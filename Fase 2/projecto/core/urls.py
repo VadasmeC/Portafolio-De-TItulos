@@ -1,11 +1,13 @@
 
 from django.urls import path
-from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, lista_notas, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion
+from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, lista_notas, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante
 
 urlpatterns = [
     path('', home, name='home'),
     path('crear_persona_perfil/', crear_persona_perfil, name='test'),
     path('registro/', registro, name='registro'),
+    path('perfil/', perfil, name='perfil'),
+    path('perfil/perfil_estudiante', ver_notas_estudiante, name='ver_notas_estudiante'),
     path('logout/', exit, name='exit'),
     path('crear-publicacion/', crear_publicacion, name='crear publicacion'),
     path('muro/', ver_publicaciones, name='muro'),
