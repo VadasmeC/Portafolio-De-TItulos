@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load custom_filters %}
+<!-- En trabajo -->
+
+{% block content %}
+    <div class="container mt-3">
+        <h2>Mis Notas - {{ asignatura.ASI_NOMBRE }}</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nota</th>
+                    {% for i in max_notas|range_filter %}
+                        <th>Nota {{ forloop.counter }}</th>
+                    {% endfor %}
+                    <th>Promedio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <!-- Mostrar las notas del estudiante -->
+                    {% for nota in notas %}
+                        <td>{{ nota.NOTA_VALOR }}</td>
+                    {% endfor %}
+
+                    <!-- Rellenar con celdas vacías si faltan notas -->
+                    {% for i in celdas_vacias|range_filter %}
+                        <td></td>
+                    {% endfor %}
+
+                    <!-- Mostrar el promedio del estudiante -->
+                    <td>{{ promedio|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

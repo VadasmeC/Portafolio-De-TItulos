@@ -13,6 +13,8 @@ from muro.models import Publicaciones, PersonasPerfiles
 from notas.models import Notas
 from sino.models import Sino
 from asistencia.models import Asistencia
+from collections import defaultdict
+
 
 
 
@@ -55,26 +57,39 @@ def test(request):
 
 @login_required
 def perfil(request):
-    # Inicializar variables
-    perfiles_con_curso = []
+    perfiles_con_cursos = defaultdict(list)
     es_profesor = False
+    es_alumno = False
 
-    # Verificar si el usuario tiene un perfil de Persona
     if hasattr(request.user, 'personas'):
         persona = request.user.personas
-        # Obtener todos los perfiles de esa persona
         perfiles = persona.perfiles.all()
-        
-        # Para cada perfil, obtener el nombre del perfil y el curso asociado
+
         for perfil in perfiles:
-            perfiles_con_curso.append((perfil.PEPE_ID, perfil.PEPE_PERF_ID.PERF_NOMBRE, perfil.PEPE_CURS_ID.CURS_NOMBRE))
+            tipo_perfil = perfil.PEPE_PERF_ID.PERF_NOMBRE
+            curso = perfil.PEPE_CURS_ID.CURS_NOMBRE if perfil.PEPE_CURS_ID else "Sin curso"
+            perfil_id = perfil.PEPE_ID
+            
+            # Agrupar cursos por tipo de perfil
+            perfiles_con_cursos[tipo_perfil].append({
+                'perfil_id': perfil_id,
+                'curso': curso,
+            })
+
             # Verificar si el perfil es de profesor
             if perfil.PEPE_PERF_ID.PERF_ID == 1:
                 es_profesor = True
+            
+            if perfil.PEPE_PERF_ID.PERF_ID == 22:
+                es_alumno = True
+
+    # Convertir defaultdict a un diccionario estándar
+    perfiles_con_cursos = dict(perfiles_con_cursos)
 
     context = {
-        'perfiles_con_curso': perfiles_con_curso,
+        'perfiles_con_cursos': perfiles_con_cursos,
         'es_profesor': es_profesor,
+        'es_alumno': es_alumno,
     }
 
     if request.method == 'POST':
@@ -430,3 +445,37 @@ def editar_asistencia(request, asistencia_id):
     }
 
     return render(request, 'asistencia/editar_asistencia.html', context)
+
+#En trabajo
+@login_required
+def ver_notas_estudiante(request, asignatura_id):
+    # Obtener la asignatura en cuestión
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
+    
+    # Obtener el perfil de estudiante autenticado
+    estudiante = PersonasPerfiles.objects.get(PEPE_PERS_ID=request.user.personas, PEPE_PERF_ID=22)
+
+    # Filtrar las notas del estudiante para la asignatura
+    notas = Notas.objects.filter(
+        NOTA_PEPE_ID=estudiante.PEPE_ID,
+        NOTA_ASIG_ID=asignatura
+    ).order_by('NOTA_FECHACREACION')
+
+    # Calcular el promedio del estudiante
+    if notas.exists():
+        promedio = sum(nota.NOTA_VALOR for nota in notas) / len(notas)
+    else:
+        promedio = 0  # O el valor que desees mostrar si no hay notas
+
+    # Calcular el máximo de notas en caso de que algunas asignaturas tengan más notas registradas
+    max_notas = len(notas)
+    celdas_vacias = max_notas - len(notas)
+
+    context = {
+        'asignatura': asignatura,
+        'notas': notas,
+        'promedio': promedio,
+        'celdas_vacias': celdas_vacias,
+    }
+
+    return render(request, 'notas/lista_notas_estudiante.html', context)
