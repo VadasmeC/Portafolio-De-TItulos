@@ -51,6 +51,7 @@
 			max-width: 370px;
 			padding: 15px;
 			margin: auto;
+      margin-top: 20px;
 		}
 
 		.form-signin .checkbox {
@@ -78,37 +79,36 @@
 <body class="text-center">
 	<main class="form-signin">
 		<form action="" method="post">
-			{% csrf_token %}
+		{% csrf_token %}
+		<img class="mb-2" src="{% static 'img/logo.png' %}" alt="img-logo" style="width: 21rem;">
+		<h1 class="h3 mb-3 fw-normal">Registrar Persona</h1>
 
-			<img class="mb-2" src="{% static 'img/logo.png' %}" alt="img-logo" style="width: 21rem;">
-			<h1 class="h3 mb-3 fw-normal">Iniciar Sesión</h1>
+		<div class="form-floating">
+			<input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>
+			<label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
+			{% if form.username.errors %}
+				<div class="invalid-feedback">
+					{{ form.username.errors }}
+				</div>
+			{% endif %}
+		</div>
+		<div class="form-floating">
+			<input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>
+			<label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
+			{% if form.username.errors %}
+				<div class="invalid-feedback">
+					{{ form.username.errors }}
+				</div>
+			{% endif %}
+		</div>
+	
+		<div class="row">
+			<div class="col-md-5"><a class="w-100 btn btn-lg btn-primary" href="{% url 'registro' %}">Registrarse</a></div>
+			<div class="col-md-2 p-0"><a class="w-100 btn btn-lg btn-success" href="{% url 'home' %}"><i class="fa-solid fa-house"></i></a></div>
+			<div class="col-md-5"><button class="w-100 btn btn-lg btn-info" type="submit">Iniciar</button></div>
+		</div>
 
-			<div class="form-floating">
-				<input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>
-				<label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
-				{% if form.username.errors %}
-					<div class="invalid-feedback">
-						{{ form.username.errors }}
-					</div>
-				{% endif %}
-			</div>
-			<div class="form-floating">
-				<input type="password" name="{{ form.password.name }}" class="form-control" id="{{ form.password.id_for_label }}" placeholder="*************" required>
-				<label for="{{ form.password.id_for_label }}">Contraseña</label>
-				{% if form.password.errors %}
-					<div class="invalid-feedback">
-						{{ form.password.errors }}
-					</div>
-				{% endif %}
-			</div>
-		
-			<div class="row mt-2">
-				<div class="col-md-5"><a class="w-100 btn btn-lg btn-primary" href="{% url 'registro' %}">Registrarse</a></div>
-				<div class="col-md-2 p-0"><a class="w-100 btn btn-lg btn-success" href="{% url 'home' %}"><i class="fa-solid fa-house"></i></a></div>
-				<div class="col-md-5"><button class="w-100 btn btn-lg btn-info" type="submit">Iniciar</button></div>
-			</div>
-
-			<p class="mt-5 mb-3 text-muted">JOKAVI &copy; 2024</p>
+		<p class="mt-5 mb-3 text-muted">JOKAVI &copy; 2024</p>
 		</form>
 	</main>
 </body>

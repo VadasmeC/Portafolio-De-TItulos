@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+a {
+    text-decoration: none !important;
+}
+
 body {
     font-family: Arial, sans-serif;
     color: #333;
@@ -27,7 +31,15 @@ body {
 }
 
 .logo {
-    height: 50px;
+    height: 65px;
+}
+
+.btn-outline-primary:hover a {
+    color: #fff;
+}
+
+.btn-primary a{
+    color: #fff;
 }
 
 nav ul {

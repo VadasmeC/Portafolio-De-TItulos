@@ -8,11 +8,30 @@ from asistencia.models import Asistencia
 
 #Formulario registro de personas
 class CustomUserCreationForm(UserCreationForm):
-    PERS_RUT = forms.CharField(max_length=9, required=True, label="RUT")
-    PERS_NOMBRECOMPLETO = forms.CharField(max_length=60, required=True, label="Nombre Completo")
-    PERS_TELEFONO = forms.CharField(max_length=14, required=True, label="Teléfono")
-    PERS_FECHANAC = forms.DateField(required=True,label='Pers_fechanac')
-    PERS_DIRECCION = forms.CharField(max_length=40,required=True,label='Pers_direccion')
+    PERS_RUT = forms.CharField(
+        max_length=9, 
+        required=True, 
+        label="RUT"
+    )
+    PERS_NOMBRECOMPLETO = forms.CharField(
+        max_length=60, 
+        required=True, 
+        label="Nombre Completo"
+    )
+    PERS_TELEFONO = forms.CharField(
+        max_length=14, 
+        required=True, 
+        label="Teléfono"
+    )
+    PERS_FECHANAC = forms.DateField(
+        required=True,
+        label='Pers_fechanac'
+    )
+    PERS_DIRECCION = forms.CharField(
+        max_length=40,
+        required=True,
+        label='Pers_direccion'
+    )
 
     class Meta:
         model = User

@@ -68,7 +68,7 @@ ROOT_URLCONF = 'JoKaVi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'core/templates/core'],  # Carpeta global de plantillas
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,9 +93,9 @@ WSGI_APPLICATION = 'JoKaVi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': '127.0.0.1:1521/xepdb1',
-        'USER': 'usuario8',
-        'PASSWORD': 'contra',
+        'NAME': '127.0.0.1:1521/xe',
+        'USER': 'C##USR_CONSULTA',
+        'PASSWORD': 'duoc',
         'TEST': {
             'USER': 'default_test',
             'TBLSPACE': 'default_test_tbls',
