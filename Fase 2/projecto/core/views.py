@@ -60,6 +60,7 @@ def perfil(request):
     perfiles_con_cursos = defaultdict(list)
     es_profesor = False
     es_alumno = False
+    asignaturas_estudiante = []  # Para almacenar las asignaturas del estudiante
 
     if hasattr(request.user, 'personas'):
         persona = request.user.personas
@@ -69,19 +70,21 @@ def perfil(request):
             tipo_perfil = perfil.PEPE_PERF_ID.PERF_NOMBRE
             curso = perfil.PEPE_CURS_ID.CURS_NOMBRE if perfil.PEPE_CURS_ID else "Sin curso"
             perfil_id = perfil.PEPE_ID
-            
+
             # Agrupar cursos por tipo de perfil
             perfiles_con_cursos[tipo_perfil].append({
                 'perfil_id': perfil_id,
                 'curso': curso,
             })
 
-            # Verificar si el perfil es de profesor
+            # Verificar si el perfil es de profesor o alumno
             if perfil.PEPE_PERF_ID.PERF_ID == 1:
                 es_profesor = True
             
             if perfil.PEPE_PERF_ID.PERF_ID == 22:
                 es_alumno = True
+                # Obtener las asignaturas en las que está inscrito el alumno
+                asignaturas_estudiante = Asignaturas.objects.filter(ASI_CURS_ID=perfil.PEPE_CURS_ID)
 
     # Convertir defaultdict a un diccionario estándar
     perfiles_con_cursos = dict(perfiles_con_cursos)
@@ -90,6 +93,7 @@ def perfil(request):
         'perfiles_con_cursos': perfiles_con_cursos,
         'es_profesor': es_profesor,
         'es_alumno': es_alumno,
+        'asignaturas_estudiante': asignaturas_estudiante,  # Pasar asignaturas
     }
 
     if request.method == 'POST':
@@ -101,9 +105,25 @@ def perfil(request):
         request.session['perfil_id'] = perfil_id
         request.session['curso_id'] = curso_id
 
-        return JsonResponse({'success': True})
+        # Obtener el perfil seleccionado para determinar si es profesor o alumno
+        try:
+            perfil = persona.perfiles.get(PEPE_ID=perfil_id)
+            perfil_tipo = None
+
+            if perfil.PEPE_PERF_ID.PERF_ID == 1:
+                perfil_tipo = 'Profesor'
+            elif perfil.PEPE_PERF_ID.PERF_ID == 22:
+                perfil_tipo = 'Alumno'
+
+            # Enviar el tipo de perfil en la respuesta JSON
+            return JsonResponse({'success': True, 'perfil_tipo': perfil_tipo})
+
+        except PersonasPerfiles.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Perfil no encontrado.'})
 
     return render(request, 'core/perfil.html', context)
+
+
 
 def exit(request):
     logout(request)
@@ -417,11 +437,6 @@ def ver_asistencia(request, asignatura_id):
 
 
 
-
-
-
-
-
 @login_required
 def editar_asistencia(request, asistencia_id):
     # Obtener la asistencia que se quiere editar
@@ -448,34 +463,33 @@ def editar_asistencia(request, asistencia_id):
 
 #En trabajo
 @login_required
-def ver_notas_estudiante(request, asignatura_id):
-    # Obtener la asignatura en cuestión
-    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
-    
+def ver_notas_estudiante(request):
     # Obtener el perfil de estudiante autenticado
     estudiante = PersonasPerfiles.objects.get(PEPE_PERS_ID=request.user.personas, PEPE_PERF_ID=22)
+    
+    # Obtener las asignaturas en las que está inscrito el estudiante
+    asignaturas = Asignaturas.objects.filter(ASI_CURS_ID=estudiante.PEPE_CURS_ID)
 
-    # Filtrar las notas del estudiante para la asignatura
-    notas = Notas.objects.filter(
-        NOTA_PEPE_ID=estudiante.PEPE_ID,
-        NOTA_ASIG_ID=asignatura
-    ).order_by('NOTA_FECHACREACION')
+    # Obtener las notas del estudiante para cada asignatura
+    notas = {}
+    for asignatura in asignaturas:
+        notas[asignatura] = Notas.objects.filter(NOTA_PEPE_ID=estudiante.PEPE_ID, NOTA_ASIG_ID=asignatura)
 
-    # Calcular el promedio del estudiante
-    if notas.exists():
-        promedio = sum(nota.NOTA_VALOR for nota in notas) / len(notas)
-    else:
-        promedio = 0  # O el valor que desees mostrar si no hay notas
-
-    # Calcular el máximo de notas en caso de que algunas asignaturas tengan más notas registradas
-    max_notas = len(notas)
-    celdas_vacias = max_notas - len(notas)
+    # Calcular el promedio para cada asignatura
+    promedios = {}
+    for asignatura, notas_asignatura in notas.items():
+        if notas_asignatura.exists():
+            promedio = sum(nota.NOTA_VALOR for nota in notas_asignatura) / len(notas_asignatura)
+        else:
+            promedio = 0  # O el valor que desees mostrar si no hay notas
+        promedios[asignatura] = promedio
 
     context = {
-        'asignatura': asignatura,
+        'estudiante': estudiante,
+        'asignaturas': asignaturas,
         'notas': notas,
-        'promedio': promedio,
-        'celdas_vacias': celdas_vacias,
+        'promedios': promedios,
     }
 
-    return render(request, 'notas/lista_notas_estudiante.html', context)
+
+    return render(request, 'core/perfil_estudiante.html', context)

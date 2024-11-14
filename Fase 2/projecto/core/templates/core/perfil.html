@@ -46,7 +46,6 @@
             <a href="{% url 'test' %}" class="btn btn-sm btn-success">Nuevo perfil</a>
             {% elif es_alumno %}
             <p>Bienvenido, estudiante. Aquí puedes ver las secciones especiales para estudiantes.</p>
-            <a href="{% url 'ver_notas_estudiante' %}">Ver notas</a>
         {% else %}
             <p>Bienvenido, usuario.</p>
         {% endif %}
@@ -68,7 +67,7 @@
             const cursoId = this.getAttribute('data-curso-id');
   
             // Enviar la selección al servidor vía AJAX
-            fetch("{% url 'home' %}", {
+            fetch("{% url 'perfil' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -80,8 +79,14 @@
                 })
             }).then(response => response.json()).then(data => {
                 if (data.success) {
-                    // Redirigir a la vista de asignaturas o donde desees
-                    window.location.href = "{% url 'index_profesor' %}";
+                    // Redirigir según el tipo de perfil
+                    if (data.perfil_tipo === 'Profesor') {
+                        window.location.href = "{% url 'index_profesor' %}";
+                    } else if (data.perfil_tipo === 'Alumno') {
+                        window.location.href = "{% url 'ver_notas_estudiante' %}";
+                    }
+                } else {
+                    alert('Hubo un problema con la selección. Por favor, inténtalo de nuevo.');
                 }
             });
         });

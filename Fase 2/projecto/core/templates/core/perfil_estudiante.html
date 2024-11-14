@@ -4,35 +4,23 @@
 <!-- En trabajo -->
 
 {% block content %}
-    <div class="container mt-3">
-        <h2>Mis Notas - {{ asignatura.ASI_NOMBRE }}</h2>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nota</th>
-                    {% for i in max_notas|range_filter %}
-                        <th>Nota {{ forloop.counter }}</th>
-                    {% endfor %}
-                    <th>Promedio</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <!-- Mostrar las notas del estudiante -->
-                    {% for nota in notas %}
-                        <td>{{ nota.NOTA_VALOR }}</td>
-                    {% endfor %}
-
-                    <!-- Rellenar con celdas vacías si faltan notas -->
-                    {% for i in celdas_vacias|range_filter %}
-                        <td></td>
-                    {% endfor %}
-
-                    <!-- Mostrar el promedio del estudiante -->
-                    <td>{{ promedio|floatformat:2 }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="perfil-estudiante-container">
+    <h2>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }} - Perfil de Estudiante</h2>
+    <h3>Asignaturas Inscritas</h3>
+    <ul>
+        {% for asignatura in asignaturas %}
+        <li>
+            <strong>{{ asignatura.ASI_NOMBRE }}</strong>
+            <ul>
+                {% for nota in notas|get_item:asignatura %}
+                <li>Nota: {{ nota.NOTA_VALOR }} - Fecha: {{ nota.NOTA_FECHACREACION }}</li>
+                {% empty %}
+                <li>No hay notas registradas.</li>
+                {% endfor %}
+            </ul>
+            <p>Promedio: {{ promedios|get_item:asignatura }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
