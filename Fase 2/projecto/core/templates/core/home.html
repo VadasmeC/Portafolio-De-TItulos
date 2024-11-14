@@ -2,27 +2,114 @@
 {% load static %}
 {% block content %}
 
+
+<style>
+/* Estilo para la sección Hero */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+/*como crear publis */
+.hero h1 {
+    font-size: 3.5rem; 
+    margin-bottom: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif; 
+}
+/*eslogan c:*/
+.hero p {
+    font-size: 1.5rem; 
+    margin-bottom: 20px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+}
+
+.hero-button {
+    padding: 15px 30px; 
+    font-size: 1.2rem; 
+    background-color: #e4bdcc;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center; 
+}
+
+.hero-button:hover {
+    background-color: #e79ab7;
+}
+
+/* Nuestra Historia */
+.nuestra-historia-wrapper {
+    max-width: 1000px; 
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e4bdcc;
+}
+
+.nuestra-historia-wrapper h2 {
+    font-size: 2.5rem; 
+    margin-bottom: 20px;
+    color: #e79ab7;
+    text-align: center;
+    font-family: 'Georgia', serif; 
+}
+
+.nuestra-historia-wrapper p {
+    font-size: 1.2rem; 
+    line-height: 1.8;
+    color: #333;
+    font-family: 'Arial', sans-serif; 
+}
+</style>
+
+<!-- Sección Hero -->
 <section class="hero">
   <img src="{% static 'img/img_home.jpg' %}" alt="Imagen de estudiantes en clase" class="hero-image">
   <div class="hero-text">
-      <h1>Como crear publicaciones</h1>
-      <p>Conectando Profesores y Apoderados, Una Publicación a la Vez</p>
+      <h1>¿Como crear publicaciones?</h1>
+      <p>"Conectando Profesores y Apoderados, Una Publicación a la Vez"</p>
       <button class="hero-button">Aquí</button>
   </div>
 </section>
 
+<!-- Sección "Nuestra Historia" -->
 <section class="about">
-  <h2>Nuestra Historia</h2>
-  <p>
-      El Colegio "Niños Felices" fue fundado hace más de 10 años por un grupo de visionarios apasionados por la educación.
-      En sus inicios, la escuela nació con el objetivo de brindar una educación de calidad a los jóvenes de la comunidad,
-      promoviendo valores como la inclusión, la creatividad y el respeto.
-  </p>
-  <p>
-      Los fundadores del colegio creían firmemente en el poder transformador de la educación y en su capacidad para empoderar a los estudiantes.
-      Con ese espíritu, comenzaron con una pequeña aula en un edificio antiguo, donde un grupo de docentes comprometidos se dedicaba a inspirar y guiar a sus alumnos.
-      Con el tiempo, el colegio creció en número de estudiantes y en infraestructura, convirtiéndose en un espacio donde cada niño y niña podía descubrir su potencial.
-  </p>
+  <div class="nuestra-historia-wrapper">
+    <h2>Nuestra Historia</h2>
+    <p>
+        El Colegio "Niños Felices" fue fundado hace más de 10 años por un grupo de visionarios apasionados por la educación.
+        En sus inicios, la escuela nació con el objetivo de brindar una educación de calidad a los jóvenes de la comunidad,
+        promoviendo valores como la inclusión, la creatividad y el respeto.
+    </p>
+    <p>
+        Los fundadores del colegio creían firmemente en el poder transformador de la educación y en su capacidad para empoderar a los estudiantes.
+        Con ese espíritu, comenzaron con una pequeña aula en un edificio antiguo, donde un grupo de docentes comprometidos se dedicaba a inspirar y guiar a sus alumnos.
+        Con el tiempo, el colegio creció en número de estudiantes y en infraestructura, convirtiéndose en un espacio donde cada niño y niña podía descubrir su potencial.
+    </p>
+  </div>
 </section>
-{% endblock %}
 
+{% endblock %}
