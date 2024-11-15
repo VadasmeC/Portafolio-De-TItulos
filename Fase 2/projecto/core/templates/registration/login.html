@@ -1,132 +1,165 @@
-{% extends 'core/base.html' %}
-
-{% block content %}
-
-{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="es">
 {% load static %}
+{% load crispy_forms_tags %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+    <link rel="stylesheet" href="{% static 'css/bootstrap5/bootstrap.min.css' %}">
+    <link rel="icon" href="{% static 'img/min-logo.png' %}" type="image/x-icon">
+
+    <script src="{% static 'js/bootstrap5/bootstrap.bundle.min.js' %}"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>Colegio Niños Felices</title>
+
+        <style>
+        html, body {
+            height: 100%;
+            font-family: Helvetica, Arial, sans-serif;
+                background-color: #fdf5f5; 
+                color: #333;
+            }
+
+            /* Barra */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand img {
+            width: 205px; /* Tamaño del logo en la barra */
+        }
+
+        /* Estilo de los botones */
+        .btn-custom {
+            width: 100%; /* Ancho completo */
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 0;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-register {
+            background-color: #e5a0bb;
+            color: white;
+        }
+        .btn-register:hover {
+            background-color: #e27fa5;
+        }
+
+        .btn-login {
+            background-color: rgb(95, 218, 218);
+            color: white;
+        }
+        .btn-login:hover {
+            background-color: rgb(63, 216, 140);
+        }
+
+        /* Estilo del formulario */
+        .form-signin-wrapper {
+            width: 100%;
+            max-width: 400px;
+                padding: 20px;
+                margin: auto;
+                background-color: #fff; /* Fondo blanco */
+                border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+            margin-top: 20px;
+            border: 4px dashed #e4bdcc; /* Borde punteado */
+        }
+
+        .form-signin .checkbox {
+            font-weight: 400;
+        }
+
+        .form-signin .form-floating:focus-within {
+            z-index: 2;
+            }
+
+            /*tamaño del título */
+        .form-signin h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px; 
+            margin-top: 5px; 
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
 
 
-<h3 class="text-center">REGISTRO DE USUARIO</h3>
+        .form-floating {
+            margin-bottom: 20px; 
+        }
+        
+        .navbar .nav-link {
+            padding: 1px 5px;
+                color: #333;
+            font-weight: normal;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-<br>
+        .navbar .nav-link:hover {
+            color: #7dd191;
+        }
 
+        .navbar .nav-link:focus {
+            outline: none;
+            box-shadow: none;
+        }
 
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <img src="{% static 'img/logo.png' %}" alt="logo" style="width: 205px;">
-        </a>
-        <a href="/" class="nav-link">Inicio</a>
-    </div>
-</nav>
+    </style>
+</head>
 
-
-    <section class="about">
-    <form action="" method="post">
-        {% csrf_token %}
-
-        <div class="form-signin-wrapper">
-            <h1 class="h3 mb-3 fw-normal text-center">Crear cuenta</h1>
-
-            {{ form | crispy }}
-
-            <button type="submit" class="btn btn-custom btn-login">Registrarse</button>
-            <a href="{% url 'login' %}" class="btn btn-custom btn-register">Iniciar sesión</a>
+<body class="text-center">
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'img/logo.png' %}" alt="logo">
+            </a>
+            <a href="/" class="nav-link">Inicio</a> <!-- Enlace de inicio en la barra -->
         </div>
-    </form>
-    </section>
+    </nav>
 
-<style>
-body, html {
-    height: 100%;
-    font-family: Helvetica, Arial, sans-serif;
-    background-color: #fcfcfc; 
-    color: #333;
-    padding-top: 80px; 
-}
+    <main class="form-signin-wrapper">
+        <form class="form-signin" action="" method="post">
+            {% csrf_token %}
 
+            <h1 class="h3 mb-3 fw-normal">Iniciar Sesión</h1>
 
-.navbar {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+            <div class="form-floating">
+                <input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>
+                <label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
+                {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-floating">
+                <input type="password" name="{{ form.password.name }}" class="form-control" id="{{ form.password.id_for_label }}" placeholder="*************" required>
+                <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
 
-.navbar-brand img {
-    width: 205px; 
-}
+            <!-- Botones uno debajo del otro -->
+            <button type="submit" class="btn btn-custom btn-login">Iniciar</button>
+            <a href="{% url 'registro' %}" class="btn btn-custom btn-register">Registrarse</a>
 
-
-.about {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 80px); 
-}
-
-
-.form-signin-wrapper {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    margin: auto;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 4px dashed #e4bdcc;
-}
-
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-
-.btn-custom {
-    width: 100%;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px 0;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-.btn-register {
-    background-color: #e5a0bb;
-    color: white;
-}
-
-.btn-register:hover {
-    background-color: #e27fa5;
-}
-
-.btn-login {
-    background-color: rgb(95, 218, 218);
-    color: white;
-}
-
-.btn-login:hover {
-    background-color: rgb(63, 216, 140);
-}
-
-
-.form-floating {
-    margin-bottom: 20px;
-}
-
-.form-floating input {
-    border-radius: 8px;
-}
-
-
-.invalid-feedback {
-    color: red;
-    font-size: 0.9rem;
-    margin-top: 5px;
-}
-</style>
-
-{% endblock %}
+            <p class="mt-5 mb-3 text-muted">JOKAVI &copy; 2024</p>
+        </form>
+    </main>
+</body>
+</html>
