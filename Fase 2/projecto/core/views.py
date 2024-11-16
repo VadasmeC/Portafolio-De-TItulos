@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm, AsistenciaEditForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm, AsistenciaEditForm, AnotacionForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
@@ -15,7 +15,7 @@ from sino.models import Sino
 from asistencia.models import Asistencia
 from collections import defaultdict
 
-
+from anotaciones.models import Anotaciones
 
 
 # Create your views here.
@@ -461,7 +461,6 @@ def editar_asistencia(request, asistencia_id):
 
     return render(request, 'asistencia/editar_asistencia.html', context)
 
-#En trabajo
 @login_required
 def ver_notas_estudiante(request):
     # Obtener el perfil de estudiante autenticado
@@ -470,26 +469,89 @@ def ver_notas_estudiante(request):
     # Obtener las asignaturas en las que está inscrito el estudiante
     asignaturas = Asignaturas.objects.filter(ASI_CURS_ID=estudiante.PEPE_CURS_ID)
 
-    # Obtener las notas del estudiante para cada asignatura
-    notas = {}
-    for asignatura in asignaturas:
-        notas[asignatura] = Notas.objects.filter(NOTA_PEPE_ID=estudiante.PEPE_ID, NOTA_ASIG_ID=asignatura)
+    # Crear un diccionario para almacenar notas y asistencia
+    datos_por_asignatura = {}
 
-    # Calcular el promedio para cada asignatura
-    promedios = {}
-    for asignatura, notas_asignatura in notas.items():
-        if notas_asignatura.exists():
-            promedio = sum(nota.NOTA_VALOR for nota in notas_asignatura) / len(notas_asignatura)
+    for asignatura in asignaturas:
+        # Obtener notas para cada asignatura
+        notas = Notas.objects.filter(NOTA_PEPE_ID=estudiante.PEPE_ID, NOTA_ASIG_ID=asignatura)
+        if notas.exists():
+            promedio = sum(nota.NOTA_VALOR for nota in notas) / len(notas)
         else:
-            promedio = 0  # O el valor que desees mostrar si no hay notas
-        promedios[asignatura] = promedio
+            promedio = 0
+        
+        # Obtener asistencia para la asignatura actual
+        asistencias = Asistencia.objects.filter(
+            ASIS_CURS_ID=asignatura.ASI_CURS_ID,
+            ASIS_ASIG_ID=asignatura
+        )
+
+        # Calcular las fechas únicas de las clases registradas para la asignatura
+        fechas_unicas = sorted({asistencia.ASIS_FECHA for asistencia in asistencias})
+        total_dias = len(fechas_unicas)  # Total de días únicos en los que hubo clases
+
+        # Inicializar datos de asistencia
+        total_asistencias = 0
+        
+        # Calcular asistencias reales, incluyendo N/A
+        for fecha in fechas_unicas:
+            asistencia = asistencias.filter(ASIS_FECHA=fecha, ASIS_PEPE_ID=estudiante.PEPE_ID).first()
+            if asistencia and asistencia.ASIS_SINO_PRESENTE:
+                if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True":
+                    total_asistencias += 1
+
+        # Calcular el porcentaje de asistencia, incluyendo los N/A
+        if total_dias > 0:
+            porcentaje_asistencia = (total_asistencias / total_dias) * 100
+        else:
+            porcentaje_asistencia = 0  # Evitar división por cero
+
+        # Almacenar la información en el diccionario
+        datos_por_asignatura[asignatura] = {
+            'notas': notas,
+            'promedio': promedio,
+            # Total de días de clases, incluyendo N/A
+            'total_clases': total_dias,
+            'total_clases_asistidas': total_asistencias,
+            'porcentaje_asistencia': round(porcentaje_asistencia, 2)
+        }
 
     context = {
         'estudiante': estudiante,
-        'asignaturas': asignaturas,
-        'notas': notas,
-        'promedios': promedios,
+        'datos_por_asignatura': datos_por_asignatura,
     }
 
-
     return render(request, 'core/perfil_estudiante.html', context)
+
+
+@login_required
+def anotaciones_por_asignatura(request, asignatura_id):
+    # Obtener la asignatura específica
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
+    
+    # Obtener las anotaciones relacionadas con la asignatura
+    anotaciones = Anotaciones.objects.filter(ANOT_ASIG_ID=asignatura)
+    
+    # Obtener estudiantes del curso relacionado con la asignatura
+    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+    
+    # Crear un formulario para agregar una nueva anotación
+    if request.method == 'POST':
+        form = AnotacionForm(request.POST)
+        if form.is_valid():
+            nueva_anotacion = form.save(commit=False)
+            nueva_anotacion.ANOT_ASIG_ID = asignatura  # Asignar la asignatura actual a la anotación
+            nueva_anotacion.ANOT_CURS_ID = asignatura.ASI_CURS_ID  # Asignar el curso de la asignatura
+            nueva_anotacion.save()
+            return redirect('anotaciones_por_asignatura', asignatura_id=asignatura_id)
+    else:
+        form = AnotacionForm()
+    
+    context = {
+        'asignatura': asignatura,
+        'anotaciones': anotaciones,
+        'estudiantes': estudiantes,
+        'form': form,
+    }
+    
+    return render(request, 'anotaciones/anotaciones.html', context)

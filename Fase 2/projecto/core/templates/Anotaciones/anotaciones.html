@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Anotaciones para {{ asignatura.ASI_NOMBRE }}</h2>
+
+    <!-- Mostrar anotaciones existentes -->
+    {% if anotaciones %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Alumno</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Creación</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for anotacion in anotaciones %}
+                <tr>
+                    <td>{{ anotacion.ANOT_PEPE_ID.PEPE_PERS_ID }}</td>  <!-- Nombre del alumno -->
+                    <td>{{ anotacion.ANOT_TITULO }}</td>
+                    <td>{{ anotacion.ANOT_DESCRIPCION }}</td>
+                    <td>{{ anotacion.ANOT_FECHACREACION|date:"d-m-Y H:i" }}</td>
+                    <td>{{ anotacion.ANOT_ANOT_T_ID.ANOT_T_NOMBRE }}</td>  <!-- Tipo de anotación -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay anotaciones registradas para esta asignatura.</p>
+    {% endif %}
+
+    <!-- Formulario para agregar una nueva anotación -->
+    <div class="mt-4">
+        <h3>Agregar nueva anotación</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }} <!-- Mostrar el formulario -->
+            <button type="submit" class="btn btn-primary">Guardar Anotación</button>
+        </form>
+    </div>
+
+    <a href="{% url 'index_profesor' %}" class="btn btn-secondary mt-3">Volver a asignaturas</a>
+</div>
+{% endblock %}

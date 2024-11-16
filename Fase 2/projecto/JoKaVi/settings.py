@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'muro',
     'notas',
     'sino',
-    'asistencia'
+    'asistencia',
+    'anotaciones'
     ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -93,9 +94,9 @@ WSGI_APPLICATION = 'JoKaVi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': '127.0.0.1:1521/xe',
-        'USER': 'C##USR_CONSULTA',
-        'PASSWORD': 'duoc',
+        'NAME': '127.0.0.1:1521/xepdb1',
+        'USER': 'usuario8',
+        'PASSWORD': 'contra',
         'TEST': {
             'USER': 'default_test',
             'TBLSPACE': 'default_test_tbls',

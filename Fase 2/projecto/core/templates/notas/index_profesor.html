@@ -34,6 +34,10 @@
                         <!-- Botón para ver registro asistencia -->
                     <a href="{% url 'ver_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-secondary">Ver asistencia</a>
                     </td>
+                    <td>
+                        <!-- Botón para gestionar anotaciones -->
+                        <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-info">Gestionar Anotaciones</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

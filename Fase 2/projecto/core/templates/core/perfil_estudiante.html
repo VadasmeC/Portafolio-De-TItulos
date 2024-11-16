@@ -1,24 +1,32 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% load custom_filters %}
-<!-- En trabajo -->
 
 {% block content %}
 <div class="perfil-estudiante-container">
     <h2>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }} - Perfil de Estudiante</h2>
     <h3>Asignaturas Inscritas</h3>
     <ul>
-        {% for asignatura in asignaturas %}
+        {% for asignatura, datos in datos_por_asignatura.items %}
         <li>
             <strong>{{ asignatura.ASI_NOMBRE }}</strong>
             <ul>
-                {% for nota in notas|get_item:asignatura %}
+                <!-- Mostrar las notas -->
+                {% for nota in datos.notas %}
                 <li>Nota: {{ nota.NOTA_VALOR }} - Fecha: {{ nota.NOTA_FECHACREACION }}</li>
                 {% empty %}
                 <li>No hay notas registradas.</li>
                 {% endfor %}
             </ul>
-            <p>Promedio: {{ promedios|get_item:asignatura }}</p>
+            <p>Promedio: {{ datos.promedio }}</p>
+
+            <!-- Mostrar la asistencia -->
+            <h4>Asistencia</h4>
+            <ul>
+                <li>Total de Clases: {{ datos.total_clases }}</li>
+                <li>Clases Asistidas: {{ datos.total_clases_asistidas }}</li>
+                <li>% de Asistencia: {{ datos.porcentaje_asistencia }}%</li>
+            </ul>
         </li>
         {% endfor %}
     </ul>

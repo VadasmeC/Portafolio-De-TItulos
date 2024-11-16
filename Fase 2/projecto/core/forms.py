@@ -5,6 +5,7 @@ from accounts.models import Personas, PersonasPerfiles
 from muro.models import Publicaciones
 from notas.models import Notas
 from asistencia.models import Asistencia
+from anotaciones.models import Anotaciones
 
 #Formulario registro de personas
 class CustomUserCreationForm(UserCreationForm):
@@ -98,3 +99,14 @@ class AsistenciaEditForm(forms.ModelForm):
         fields = ['ASIS_SINO_PRESENTE', 'ASIS_SINO_PRESENTACERTIFICADO']
 
 
+
+class AnotacionForm(forms.ModelForm):
+    class Meta:
+        model = Anotaciones
+        fields = ['ANOT_TITULO', 'ANOT_DESCRIPCION', 'ANOT_PEPE_ID', 'ANOT_ANOT_T_ID']
+        widgets = {
+            'ANOT_TITULO': forms.TextInput(attrs={'class': 'form-control'}),
+            'ANOT_DESCRIPCION': forms.Textarea(attrs={'class': 'form-control'}),
+            'ANOT_PEPE_ID': forms.Select(attrs={'class': 'form-control'}),
+            'ANOT_ANOT_T_ID': forms.Select(attrs={'class': 'form-control'}),
+        }

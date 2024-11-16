@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, lista_notas, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante
+from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, lista_notas, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante, anotaciones_por_asignatura
 
 urlpatterns = [
     path('', home, name='home'),
@@ -20,8 +20,5 @@ urlpatterns = [
     path('asistencia/registrar/<int:asignatura_id>/', registrar_asistencia, name='registrar_asistencia'),
     path('asistencia/asignatura/<int:asignatura_id>/', ver_asistencia, name='ver_asistencia'),
     path('asistencia/editar/<int:asistencia_id>/', editar_asistencia, name='editar_asistencia'),
-
-
-    
-
+    path('anotaciones/asignatura/<int:asignatura_id>/',anotaciones_por_asignatura, name='anotaciones_por_asignatura')
 ]
