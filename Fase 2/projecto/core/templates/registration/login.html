@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
     <link rel="stylesheet" href="{% static 'css/bootstrap5/bootstrap.min.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/bootstrap5/bootstrap.rtl.min.css' %}"> -->
     <link rel="icon" href="{% static 'img/min-logo.png' %}" type="image/x-icon">
 
     <script src="{% static 'js/bootstrap5/bootstrap.bundle.min.js' %}"></script>
@@ -17,99 +16,150 @@
 
     <title>Colegio Niños Felices</title>
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
+        <style>
+        html, body {
+            height: 100%;
+            font-family: Helvetica, Arial, sans-serif;
+                background-color: #fdf5f5; 
+                color: #333;
+            }
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+            /* Barra */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-      }
+
+        .navbar-brand img {
+            width: 205px; /* Tamaño del logo en la barra */
+        }
+
+        /* Estilo de los botones */
+        .btn-custom {
+            width: 100%; /* Ancho completo */
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 0;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-register {
+            background-color: #e5a0bb;
+            color: white;
+        }
+        .btn-register:hover {
+            background-color: #e27fa5;
+        }
+
+        .btn-login {
+            background-color: rgb(95, 218, 218);
+            color: white;
+        }
+        .btn-login:hover {
+            background-color: rgb(63, 216, 140);
+        }
+
+        /* Estilo del formulario */
+        .form-signin-wrapper {
+            width: 100%;
+            max-width: 400px;
+                padding: 20px;
+                margin: auto;
+                background-color: #fff; /* Fondo blanco */
+                border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+            margin-top: 20px;
+            border: 4px dashed #e4bdcc; /* Borde punteado */
+        }
+
+        .form-signin .checkbox {
+            font-weight: 400;
+        }
+
+        .form-signin .form-floating:focus-within {
+            z-index: 2;
+            }
+
+            /*tamaño del título */
+        .form-signin h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px; 
+            margin-top: 5px; 
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+
+        .form-floating {
+            margin-bottom: 20px; 
+        }
+        
+        .navbar .nav-link {
+            padding: 1px 5px;
+                color: #333;
+            font-weight: normal;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .navbar .nav-link:hover {
+            color: #7dd191;
+        }
+
+        .navbar .nav-link:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
     </style>
-
-	<style>
-		html,body {
-			height: 100%;
-		}
-
-		body {
-			display: flex;
-			align-items: center;
-			padding-top: 40px;
-			padding-bottom: 40px;
-			background-color: #f5f5f5;
-		}
-
-		.form-signin {
-			width: 100%;
-			max-width: 370px;
-			padding: 15px;
-			margin: auto;
-		}
-
-		.form-signin .checkbox {
-		font-weight: 400;
-		}
-
-		.form-signin .form-floating:focus-within {
-			z-index: 2;
-		}
-
-		.form-signin input[type="email"] {
-			margin-bottom: -1px;
-			border-bottom-right-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-
-		.form-signin input[type="password"] {
-			margin-bottom: 10px;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
-		}
-	</style>
 </head>
 
 <body class="text-center">
-	<main class="form-signin">
-		<form action="" method="post">
-			{% csrf_token %}
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'img/logo.png' %}" alt="logo">
+            </a>
+            <a href="/" class="nav-link">Inicio</a> <!-- Enlace de inicio en la barra -->
+        </div>
+    </nav>
 
-			<img class="mb-2" src="{% static 'img/logo.png' %}" alt="img-logo" style="width: 21rem;">
-			<h1 class="h3 mb-3 fw-normal">Iniciar Sesión</h1>
+    <main class="form-signin-wrapper">
+        <form class="form-signin" action="" method="post">
+            {% csrf_token %}
 
-			<div class="form-floating">
-				<input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>
-				<label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
-				{% if form.username.errors %}
-					<div class="invalid-feedback">
-						{{ form.username.errors }}
-					</div>
-				{% endif %}
-			</div>
-			<div class="form-floating">
-				<input type="password" name="{{ form.password.name }}" class="form-control" id="{{ form.password.id_for_label }}" placeholder="*************" required>
-				<label for="{{ form.password.id_for_label }}">Contraseña</label>
-				{% if form.password.errors %}
-					<div class="invalid-feedback">
-						{{ form.password.errors }}
-					</div>
-				{% endif %}
-			</div>
-		
-			<div class="row mt-2">
-				<div class="col-md-5"><a class="w-100 btn btn-lg btn-primary" href="{% url 'registro' %}">Registrarse</a></div>
-				<div class="col-md-2 p-0"><a class="w-100 btn btn-lg btn-success" href="{% url 'home' %}"><i class="fa-solid fa-house"></i></a></div>
-				<div class="col-md-5"><button class="w-100 btn btn-lg btn-info" type="submit">Iniciar</button></div>
-			</div>
+            <h1 class="h3 mb-3 fw-normal">Iniciar Sesión</h1>
 
-			<p class="mt-5 mb-3 text-muted">JOKAVI &copy; 2024</p>
-		</form>
-	</main>
+            <div class="form-floating">
+                <input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>
+                <label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
+                {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-floating">
+                <input type="password" name="{{ form.password.name }}" class="form-control" id="{{ form.password.id_for_label }}" placeholder="*************" required>
+                <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Botones uno debajo del otro -->
+            <button type="submit" class="btn btn-custom btn-login">Iniciar</button>
+            <a href="{% url 'registro' %}" class="btn btn-custom btn-register">Registrarse</a>
+
+            <p class="mt-5 mb-3 text-muted">JOKAVI &copy; 2024</p>
+        </form>
+    </main>
 </body>
 </html>

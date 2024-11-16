@@ -94,9 +94,9 @@ WSGI_APPLICATION = 'JoKaVi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': '127.0.0.1:1521/xepdb1',
-        'USER': 'usuario8',
-        'PASSWORD': 'contra',
+        'NAME': '127.0.0.1:1521/xe',
+        'USER': 'CUSR_CONSULTA',
+        'PASSWORD': 'duoc',
         'TEST': {
             'USER': 'default_test',
             'TBLSPACE': 'default_test_tbls',

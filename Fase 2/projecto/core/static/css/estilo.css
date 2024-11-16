@@ -16,7 +16,7 @@ body {
 
 .header-container {
     display: flex;
-    align-items: center;
+    align-items: right;
     justify-content: space-between;
     padding: 15px 30px;
     background-color: #f8f9fa;
@@ -108,7 +108,7 @@ nav ul li a:hover {
 }
 
 .about {
-    background-color: #f7e6f0;
+    background-color: #fdf5f5;
     padding: 40px;
     text-align: center;
 }
