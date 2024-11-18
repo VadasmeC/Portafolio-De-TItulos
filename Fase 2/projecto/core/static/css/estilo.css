@@ -1,3 +1,4 @@
+/* Reiniciar márgenes y rellenos */
 * {
     margin: 0;
     padding: 0;
@@ -8,20 +9,14 @@ a {
     text-decoration: none !important;
 }
 
+/* Estilo general del body */
 body {
     font-family: Arial, sans-serif;
     color: #333;
-    
 }
 
-.header-container {
-    display: flex;
-    align-items: right;
-    justify-content: space-between;
-    padding: 15px 30px;
-    background-color: #f8f9fa;
-}
-
+/* Estilo del contenedor del header */
+.header-container,
 .header-container2 {
     display: flex;
     align-items: center;
@@ -30,155 +25,42 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Estilo del logo */
 .logo {
-    height: 65px;
+    height: 63px;
+    margin-top: 9px; /* Ajusta el valor según lo que necesites */
 }
 
-.btn-outline-primary:hover a {
-    color: #fff;
-}
-
-.btn-primary a{
-    color: #fff;
-}
-
-nav ul {
+/* Estilo de los enlaces */
+.nav ul {
     list-style: none;
     display: flex;
     gap: 15px;
 }
 
-nav ul li a {
+.nav ul li a {
     text-decoration: none;
     color: #333;
     font-weight: bold;
-    transition: color 0.3s;
-}
-
-nav ul li a:hover {
-    color: #007bff;
-}
-
-.hero {
-    position: relative;
-    text-align: center;
-    color: white;
-}
-
-.hero-image {
-    width: 100%;
-    height: 60vh;
-    object-fit: cover;
-}
-
-.hero-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.hero h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-
-.hero p {
-    font-size: 1.2em;
-}
-
-.hero-button {
-    background-color: #ffffff;
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1em;
+    transition: color 0.3s, background-color 0.3s;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+    padding: 5px 10px;
 }
 
-.hero-button:hover {
-    background-color: #007bff;
-    color: #ffffff;
-}
-
-.about {
-    background-color: #fdf5f5;
-    padding: 40px;
-    text-align: center;
-}
-
-.about h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
-    color: #a14583;
-}
-
-.about p {
-    font-size: 1.1em;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    color: #555;
-}
-
-
-
-
-
-.perfil-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
-    background-color: #f8ebeb;
-    border: 1px dashed #e3c2c2;
-}
-
-.perfil-card, .perfil-descripcion, .perfil-publicaciones {
-    background-color: white;
-    padding: 20px;
-    border: 1px dashed #e3c2c2;
-    border-radius: 8px;
-    flex-basis: 100%;
-}
-
-.perfil-card {
-    max-width: 300px;
-    text-align: center;
-}
-
-.perfil-foto img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-}
-
-.editar-btn {
-    background-color: #ddd;
-    border: none;
-    padding: 5px 15px;
-    border-radius: 5px;
-    margin: 10px 0;
-    cursor: pointer;
-}
-
-.contacto-info p {
-    margin: 5px 0;
+/* Estilo del menú */
+.nav-link {
+    padding: 5px 10px;
     color: #333;
-}
-
-.perfil-descripcion h3 {
-    margin-bottom: 10px;
     font-weight: normal;
+    transition: color 0.3s, background-color 0.3s;
+    border-radius: 5px;
 }
 
-.perfil-publicaciones {
-    text-align: center;
-    font-weight: bold;
+
+/* Estilo para los botones dentro del menú */
+.nav-link {
+    padding: 5px 10px;
+    font-weight: normal;
+    color: #333;
 }
+

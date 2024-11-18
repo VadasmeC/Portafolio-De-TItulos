@@ -10,13 +10,13 @@
 
 <br>
 
-
+<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top">
   <div class="container">
       <a class="navbar-brand" href="#">
           <img src="{% static 'img/logo.png' %}" alt="logo" style="width: 205px;">
       </a>
-      <a href="/" class="nav-link">Inicio</a>
+      <a href="/" class="nav-link btn-home">Inicio</a> <!-- Enlace con clase btn-home para estilo -->
   </div>
 </nav>
 
@@ -51,7 +51,7 @@ body, html {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h3{
+h3 {
   margin-top: 40px;
   text-align: center;
 }
@@ -70,7 +70,7 @@ h3{
 /* Estilo del formulario */
 .form-signin-wrapper {
   width: 100%;
-  max-width: 400px;
+  max-width: 600px; /* Aumenté el ancho máximo */
   padding: 20px;
   margin: auto;
   background-color: #fff;
@@ -115,6 +115,18 @@ h1 {
 
 .btn-login:hover {
   background-color: rgb(63, 216, 140);
+}
+
+/* Botón de inicio en la barra de navegación */
+.navbar .nav-link {
+  padding: 5px 15px;
+  font-weight: normal;
+  color: #333;
+  background-color: #fff;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  display: inline-block; /* Asegura que se comporte como un botón */
 }
 
 /* Estilo de los campos de formulario */

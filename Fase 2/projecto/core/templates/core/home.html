@@ -2,8 +2,8 @@
 {% load static %}
 {% block content %}
 
-
 <style>
+
 /* Estilo para la sección Hero */
 .hero {
     position: relative;
@@ -20,7 +20,8 @@
     top: 0;
     left: 0;
 }
-/*Boton publis*/
+
+/* Texto de la Hero */
 .hero-text {
     position: absolute;
     top: 50%;
@@ -29,19 +30,22 @@
     text-align: center;
     color: white;
 }
-/*como crear publis */
+
+/* Título de la Hero */
 .hero h1 {
     font-size: 3.5rem; 
     margin-bottom: 10px;
     font-family: Verdana, Geneva, Tahoma, sans-serif; 
 }
-/*eslogan c:*/
+
+/* Eslogan */
 .hero p {
     font-size: 1.5rem; 
     margin-bottom: 20px;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
 }
 
+/* Estilo del botón en Hero */
 .hero-button {
     padding: 15px 30px; 
     font-size: 1.2rem; 
@@ -58,7 +62,7 @@
     background-color: #e79ab7;
 }
 
-/* Nuestra Historia */
+/* Estilo de la sección Nuestra Historia */
 .nuestra-historia-wrapper {
     max-width: 1000px; 
     margin: 40px auto;
@@ -87,29 +91,29 @@
 
 <!-- Sección Hero -->
 <section class="hero">
-  <img src="{% static 'img/img_home.jpg' %}" alt="Imagen de estudiantes en clase" class="hero-image">
-  <div class="hero-text">
-      <h1>¿Como crear publicaciones?</h1>
-      <p>"Conectando Profesores y Apoderados, Una Publicación a la Vez"</p>
-      <button class="hero-button">Aquí</button>
-  </div>
+    <img src="{% static 'img/img_home.jpg' %}" alt="Imagen de estudiantes en clase" class="hero-image">
+    <div class="hero-text">
+        <h1>¿Cómo crear publicaciones?</h1>
+        <p>"Conectando Profesores y Apoderados, Una Publicación a la Vez"</p>
+        <button class="hero-button">Aquí</button>
+    </div>
 </section>
 
 <!-- Sección "Nuestra Historia" -->
 <section class="about">
-  <div class="nuestra-historia-wrapper">
-    <h2>Nuestra Historia</h2>
-    <p>
-        El Colegio "Niños Felices" fue fundado hace más de 10 años por un grupo de visionarios apasionados por la educación.
-        En sus inicios, la escuela nació con el objetivo de brindar una educación de calidad a los jóvenes de la comunidad,
-        promoviendo valores como la inclusión, la creatividad y el respeto.
-    </p>
-    <p>
-        Los fundadores del colegio creían firmemente en el poder transformador de la educación y en su capacidad para empoderar a los estudiantes.
-        Con ese espíritu, comenzaron con una pequeña aula en un edificio antiguo, donde un grupo de docentes comprometidos se dedicaba a inspirar y guiar a sus alumnos.
-        Con el tiempo, el colegio creció en número de estudiantes y en infraestructura, convirtiéndose en un espacio donde cada niño y niña podía descubrir su potencial.
-    </p>
-  </div>
+    <div class="nuestra-historia-wrapper">
+        <h2>Nuestra Historia</h2>
+        <p>
+            El Colegio "Niños Felices" fue fundado hace más de 10 años por un grupo de visionarios apasionados por la educación.
+            En sus inicios, la escuela nació con el objetivo de brindar una educación de calidad a los jóvenes de la comunidad,
+            promoviendo valores como la inclusión, la creatividad y el respeto.
+        </p>
+        <p>
+            Los fundadores del colegio creían firmemente en el poder transformador de la educación y en su capacidad para empoderar a los estudiantes.
+            Con ese espíritu, comenzaron con una pequeña aula en un edificio antiguo, donde un grupo de docentes comprometidos se dedicaba a inspirar y guiar a sus alumnos.
+            Con el tiempo, el colegio creció en número de estudiantes y en infraestructura, convirtiéndose en un espacio donde cada niño y niña podía descubrir su potencial.
+        </p>
+    </div>
 </section>
 
 {% endblock %}

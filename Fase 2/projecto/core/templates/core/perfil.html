@@ -3,70 +3,140 @@
 {% block content %}
 <div class="perfil-container">
     <div class="perfil-card">
-        <div class="perfil-foto">
+        <div class="perfil-imagen" onclick="document.getElementById('fileInput').click();">
+            <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="previewImage(event)">
+            <img src="{{ user.profile.image.url }}" alt="Imagen de perfil" class="perfil-img" id="profileImage">
         </div>
-        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+        <h2 class="text-center">{{ user.first_name }} {{ user.last_name }}</h2>
         <div class="contacto-info">
-            <p><strong>Tarjeta de Contacto</strong></p>
-            <p>Fono: {{ user.personas.PERS_TELEFONO }}</p>
-            <p>Rut: {{ user.personas.PERS_RUT }}</p>
-            <p>Correo: {{ user.email }}</p>
+            <p><strong class="text-center">Tarjeta de Contacto</strong></p>
+            <p class="text-center">Fono: {{ user.personas.PERS_TELEFONO }}</p>
+            <p class="text-center">Rut: {{ user.personas.PERS_RUT }}</p>
+            <p class="text-center">Correo: {{ user.email }}</p>
         </div>
     </div>
-    
+
     <div class="perfil-descripcion">
-        <h3>Descripción</h3>
+        <h3 class="text-center">Descripción</h3>
         <p>...</p>
         <div class="dropdown">
-          <h2>Seleccione su tipo de perfil</h2>
-          <ul>
-              {% for tipo_perfil, cursos in perfiles_con_cursos.items %}
-                <li>
-                  <strong>{{ tipo_perfil }}</strong>
-                  <ul>
-                      {% for curso in cursos %}
-                          <li>
-                              <a href="#" class="seleccionar-curso" data-perfil-id="{{ curso.perfil_id }}" data-curso-id="{{ curso.curso }}">
-                                Curso: {{ curso.curso }}
-                              </a>
-                          </li>
-                      {% endfor %}
-                  </ul>
-                </li>
-              {% empty %}
-                <li>No hay perfiles disponibles.</li>
-              {% endfor %}
-          </ul>
+            <h2 class="text-center">Seleccione su tipo de perfil</h2>
+            <ul>
+                {% for tipo_perfil, cursos in perfiles_con_cursos.items %}
+                    <li>
+                        <strong>{{ tipo_perfil }}</strong>
+                        <ul>
+                            {% for curso in cursos %}
+                                <li>
+                                    <a href="#" class="seleccionar-curso" data-perfil-id="{{ curso.perfil_id }}" data-curso-id="{{ curso.curso }}">
+                                        Curso: {{ curso.curso }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% empty %}
+                    <li>No hay perfiles disponibles.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-
-    <div class="container mt-3">
-        {% if es_profesor %}
-            <p>Bienvenido, profesor. Tienes acceso a secciones especiales para profesores.</p>
-            <a href="{% url 'test' %}" class="btn btn-sm btn-success">Nuevo perfil</a>
-            {% elif es_alumno %}
-            <p>Bienvenido, estudiante. Aquí puedes ver las secciones especiales para estudiantes.</p>
-        {% else %}
-            <p>Bienvenido, usuario.</p>
-        {% endif %}
-    </div>
-
-    <div class="perfil-publicaciones">
-        <p>CANTIDAD DE PUBLICACIONES: pendiente</p>
-    </div>
 </div>
+
+<style>
+    .perfil-container {
+        display: flex;
+        gap: 30px;
+        background-color: #fdf5f5;
+        padding: 40px;
+        border-radius: 8px;
+        height: auto;
+        text-align: center;
+    }
+
+    .perfil-card, .perfil-descripcion {
+        padding: 50px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        height: auto;
+        border: 4px dashed #e4bdcc;
+    }
+
+    .perfil-card {
+        flex: 0 0 40%;
+    }
+
+    .perfil-descripcion {
+        flex: 0 0 58%;
+    }
+
+    .perfil-imagen {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        background-color: #f1e7eb;
+        cursor: pointer;
+        border: 4px solid #e4bdcc;
+    }
+
+    .perfil-imagen img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .perfil-card h2 {
+        font-size: 2.5rem;
+        font-family: inherit;
+    }
+
+    .perfil-card p, .perfil-descripcion p {
+        font-size: 1.2rem;
+    }
+
+    .contacto-info p {
+        margin-bottom: 20px;
+    }
+
+    .dropdown ul li {
+        margin-bottom: 5px;
+    }
+
+    /* Aumenta el tamaño de las letras en la sección de descripción */
+    .perfil-descripcion h2, .perfil-descripcion h3 {
+        font-size: 2rem; /* Se aumentó el tamaño de la fuente */
+    }
+
+    .perfil-descripcion p {
+        font-size: 1.5rem; /* Aumentó el tamaño del texto en la descripción */
+    }
+
+    @media (max-width: 768px) {
+        .perfil-container {
+            flex-direction: column;
+        }
+
+        .perfil-card, .perfil-descripcion {
+            flex: 1 1 100%;
+            height: auto;
+        }
+    }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.querySelectorAll('.seleccionar-curso').forEach(function(item) {
         item.addEventListener('click', function(e) {
             e.preventDefault();
-  
-            // Obtener el perfil y curso seleccionados
+
             const perfilId = this.getAttribute('data-perfil-id');
             const cursoId = this.getAttribute('data-curso-id');
-  
-            // Enviar la selección al servidor vía AJAX
+
             fetch("{% url 'perfil' %}", {
                 method: 'POST',
                 headers: {
@@ -79,7 +149,6 @@
                 })
             }).then(response => response.json()).then(data => {
                 if (data.success) {
-                    // Redirigir según el tipo de perfil
                     if (data.perfil_tipo === 'Profesor') {
                         window.location.href = "{% url 'index_profesor' %}";
                     } else if (data.perfil_tipo === 'Alumno') {
@@ -91,6 +160,15 @@
             });
         });
     });
-</script>
 
+    // Función para previsualizar la imagen seleccionada
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const output = document.getElementById('profileImage');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 {% endblock %}

@@ -82,6 +82,7 @@
 		{% csrf_token %}
 		<img class="mb-2" src="{% static 'img/logo.png' %}" alt="img-logo" style="width: 21rem;">
 		<h1 class="h3 mb-3 fw-normal">Registrar Persona</h1>
+		
 
 		<div class="form-floating">
 			<input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Nombre de usuario" required>

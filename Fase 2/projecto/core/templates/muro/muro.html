@@ -1,11 +1,12 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<SECTion class="about">
+<section class="about" style="background-color: #fdf5f5; padding-top: 100px; padding-bottom: 40px;">
 
-    <h2>Muro</h2>
+    <!-- Título centrado -->
+    <h2 class="text-center" style="font-size: 3rem; color: #e4bdcc; margin-top: 0;">Muro</h2>
 
-    <div class="row">
+    <div class="row mt-5">
         {% for publicacion in publicaciones %}
             <div class="col-12 col-md-6 mb-4">
                 <div class="card">
@@ -26,6 +27,6 @@
             </div>
         {% endfor %}
     </div>
-</SECTion>
+</section>
 
 {% endblock %}
