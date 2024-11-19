@@ -6,6 +6,12 @@
     <div class="container mt-3">
         <h2>Listado de Notas - {{ asignatura.ASI_NOMBRE }}</h2>
 
+        {% if mensaje %}
+            <div class="alert alert-warning" role="alert">
+                {{ mensaje }}
+            </div>
+        {% endif %}
+
         <table class="table">
             <thead>
                 <tr>
@@ -45,5 +51,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <!-- Botón para ir a ver las asignaturas -->
+        <a href="{% url 'index_profesor' %}" class="btn btn-secondary mt-3">Volver a asignaturas</a>
     </div>
 {% endblock %}

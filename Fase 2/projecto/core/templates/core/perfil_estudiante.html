@@ -3,32 +3,71 @@
 {% load custom_filters %}
 
 {% block content %}
-<div class="perfil-estudiante-container">
-    <h2>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }} - Perfil de Estudiante</h2>
-    <h3>Asignaturas Inscritas</h3>
-    <ul>
-        {% for asignatura, datos in datos_por_asignatura.items %}
-        <li>
-            <strong>{{ asignatura.ASI_NOMBRE }}</strong>
-            <ul>
-                <!-- Mostrar las notas -->
-                {% for nota in datos.notas %}
-                <li>Nota: {{ nota.NOTA_VALOR }} - Fecha: {{ nota.NOTA_FECHACREACION }}</li>
-                {% empty %}
-                <li>No hay notas registradas.</li>
-                {% endfor %}
-            </ul>
-            <p>Promedio: {{ datos.promedio }}</p>
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }} - Perfil de Estudiante</h2>
+            <h3 class="mb-3">Asignaturas Inscritas</h3>
 
-            <!-- Mostrar la asistencia -->
-            <h4>Asistencia</h4>
-            <ul>
-                <li>Total de Clases: {{ datos.total_clases }}</li>
-                <li>Clases Asistidas: {{ datos.total_clases_asistidas }}</li>
-                <li>% de Asistencia: {{ datos.porcentaje_asistencia }}%</li>
-            </ul>
-        </li>
-        {% endfor %}
-    </ul>
+            <div class="accordion" id="accordionAsignaturas">
+                {% for asignatura, datos in datos_por_asignatura.items %}
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                            {{ asignatura.ASI_NOMBRE }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionAsignaturas">
+                        <div class="accordion-body">
+
+                            <!-- Sección de Notas -->
+                            <div class="mb-3">
+                                <h4 class="fw-bold">Notas</h4>
+                                <ul class="list-group mb-2">
+                                    {% for nota in datos.notas %}
+                                    <li class="list-group-item">Nota: {{ nota.NOTA_VALOR }}</li>
+                                    {% empty %}
+                                    <li class="list-group-item">No hay notas registradas.</li>
+                                    {% endfor %}
+                                </ul>
+                                <p class="text-primary"><strong>Promedio:</strong> {{ datos.promedio }}</p>
+                            </div>
+
+                            <!-- Sección de Asistencia -->
+                            <div class="mb-3">
+                                <h4 class="fw-bold">Asistencia</h4>
+                                <ul class="list-group mb-2">
+                                    <li class="list-group-item"><strong>Total de Clases:</strong> {{ datos.total_clases }}</li>
+                                    <li class="list-group-item"><strong>Clases Asistidas:</strong> {{ datos.total_clases_asistidas }}</li>
+                                    <li class="list-group-item"><strong>% de Asistencia:</strong> {{ datos.porcentaje_asistencia }}%</li>
+                                </ul>
+                            </div>
+
+                            <!-- Sección de Anotaciones -->
+                            <div class="mb-3">
+                                <h4 class="fw-bold">Anotaciones</h4>
+                                <ul class="list-group">
+                                    {% if datos.anotaciones %}
+                                        {% for anotacion in datos.anotaciones %}
+                                        <li class="list-group-item">
+                                            <span class="badge bg-danger">{{ anotacion.ANOT_ANOT_T_ID.ANOT_T_NOMBRE }}</span>
+                                            <strong>{{ anotacion.ANOT_TITULO }}</strong> - {{ anotacion.ANOT_DESCRIPCION }}
+                                            <span class="text-muted">({{ anotacion.ANOT_FECHACREACION|date:"d-m-Y" }})</span>
+                                        </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="list-group-item">No hay anotaciones para esta asignatura.</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
+
 {% endblock %}

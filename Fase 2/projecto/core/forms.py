@@ -61,7 +61,8 @@ class PersonasPerfilesForm(forms.ModelForm):
 
     class Meta:
         model = PersonasPerfiles
-        fields = ['PEPE_PERS_ID', 'PEPE_CURS_ID','PEPE_PERF_ID', 'PEPE_PEPE_RESPONSABLE']
+        fields = ['PEPE_PERS_ID', 'PEPE_CURS_ID', 'PEPE_PERF_ID']
+
 
 
 #Formulario publicaciones
@@ -82,10 +83,9 @@ class PublicacionForm(forms.ModelForm):
 class NotasForm(forms.ModelForm):
     class Meta:
         model = Notas
-        fields = ['NOTA_VALOR', 'NOTA_DESCRIPCION']
+        fields = ['NOTA_VALOR']
         widgets = {
-            'NOTA_VALOR': forms.NumberInput(attrs={'min': 1, 'max': 7}),
-            'NOTA_DESCRIPCION': forms.Textarea(attrs={'rows': 3}),
+            'NOTA_VALOR': forms.NumberInput(attrs={'min': 1, 'max': 7})
         }   
 
 class NotaEditForm(forms.ModelForm):
@@ -103,10 +103,10 @@ class AsistenciaEditForm(forms.ModelForm):
 class AnotacionForm(forms.ModelForm):
     class Meta:
         model = Anotaciones
-        fields = ['ANOT_TITULO', 'ANOT_DESCRIPCION', 'ANOT_PEPE_ID', 'ANOT_ANOT_T_ID']
+        fields = ['ANOT_TITULO', 'ANOT_DESCRIPCION', 'ANOT_ANOT_T_ID']  # Excluye ANOT_PEPE_ID
         widgets = {
             'ANOT_TITULO': forms.TextInput(attrs={'class': 'form-control'}),
             'ANOT_DESCRIPCION': forms.Textarea(attrs={'class': 'form-control'}),
-            'ANOT_PEPE_ID': forms.Select(attrs={'class': 'form-control'}),
             'ANOT_ANOT_T_ID': forms.Select(attrs={'class': 'form-control'}),
         }
+

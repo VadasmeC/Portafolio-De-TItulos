@@ -230,11 +230,18 @@ def ver_asignaturas(request):
 
 @login_required
 def poner_nota(request, id):
-    asignatura = Asignaturas.objects.get(ASI_ID=id)
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=id)
     curso = asignatura.ASI_CURS_ID
 
-    # Obtener los estudiantes del curso
-    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=curso)
+    # Obtener solo los estudiantes (alumnos) del curso
+    estudiantes = PersonasPerfiles.objects.filter(
+        PEPE_CURS_ID=curso,
+        PEPE_PERF_ID=22  # Solo alumnos
+    )
+
+    # Mensaje si no hay alumnos
+    if not estudiantes:
+        mensaje = "No hay estudiantes registrados en este curso."
 
     if request.method == 'POST':
         # Guardar las notas enviadas por el formulario
@@ -256,23 +263,13 @@ def poner_nota(request, id):
         'asignatura': asignatura,
         'curso': curso,
         'estudiantes': estudiantes,
+        'mensaje': mensaje if not estudiantes else '',  # Mostrar mensaje si no hay estudiantes
     }
 
     return render(request, 'notas/poner_nota.html', context)
 
 
-#ver notas
-def lista_notas(request):
-    notas = Notas.objects.all()
-
-    context = {
-        'notas': notas,
-    }
-    return render(request, 'notas/lista_notas.html', context)
-
-
-
-
+@login_required
 def ver_notas_asignatura(request, asignatura_id):
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
 
@@ -282,8 +279,15 @@ def ver_notas_asignatura(request, asignatura_id):
         NOTA_ASIG_ID=asignatura
     ).select_related('NOTA_PEPE_ID').order_by('NOTA_FECHACREACION')
 
-    # Obtener estudiantes
-    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+    # Obtener solo los estudiantes (alumnos) del curso
+    estudiantes = PersonasPerfiles.objects.filter(
+        PEPE_CURS_ID=asignatura.ASI_CURS_ID,
+        PEPE_PERF_ID=22  # Solo alumnos
+    )
+
+    # Si no hay estudiantes, agregar mensaje
+    if not estudiantes:
+        mensaje = "No hay estudiantes registrados en este curso."
 
     # Crear un diccionario de notas y promedio por estudiante
     notas_por_estudiante = {}
@@ -315,6 +319,7 @@ def ver_notas_asignatura(request, asignatura_id):
         'estudiantes': estudiantes,
         'max_notas': max_notas,
         'celdas_vacias_por_estudiante': celdas_vacias_por_estudiante,
+        'mensaje': mensaje if not estudiantes else '',  # Añadir mensaje si no hay estudiantes
     }
 
     return render(request, 'notas/lista_notas.html', context)
@@ -349,18 +354,22 @@ def editar_nota(request, nota_id):
 def registrar_asistencia(request, asignatura_id):
     asignatura = Asignaturas.objects.get(ASI_ID=asignatura_id)
     curso = asignatura.ASI_CURS_ID
-    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=curso)
+    # Filtrar solo los alumnos del curso
+    estudiantes = PersonasPerfiles.objects.filter(
+        PEPE_CURS_ID=curso,
+        PEPE_PERF_ID=22  # 22 es el PERF_ID para 'Alumno'
+    )
 
     if request.method == 'POST':
-            # Opciones de presente/ausente
-            presente_opcion = Sino.objects.get(SINO_ESTADO='True')
-            ausente_opcion = Sino.objects.get(SINO_ESTADO='False')
+        # Opciones de presente/ausente
+        presente_opcion = Sino.objects.get(SINO_ESTADO='True')
+        ausente_opcion = Sino.objects.get(SINO_ESTADO='False')
 
-            for estudiante in estudiantes:
-                asistencia_valor = request.POST.get(f'asistencia_{estudiante.PEPE_ID}')
-                certificado_valor = request.POST.get(f'certificado_{estudiante.PEPE_ID}', False)
-                # Crear un nuevo registro de asistencia
-                Asistencia.objects.create(
+        for estudiante in estudiantes:
+            asistencia_valor = request.POST.get(f'asistencia_{estudiante.PEPE_ID}')
+            certificado_valor = request.POST.get(f'certificado_{estudiante.PEPE_ID}', False)
+            # Crear un nuevo registro de asistencia
+            Asistencia.objects.create(
                 ASIS_FECHA=request.POST.get('fecha'),
                 ASIS_SINO_PRESENTE=presente_opcion if asistencia_valor == 'presente' else ausente_opcion,
                 ASIS_SINO_PRESENTACERTIFICADO=presente_opcion if certificado_valor else ausente_opcion,
@@ -369,8 +378,7 @@ def registrar_asistencia(request, asignatura_id):
                 ASIS_ASIG_ID=asignatura,
             )
         
-            return redirect('index_profesor')
-
+        return redirect('index_profesor')
 
     context = {
         'asignatura': asignatura,
@@ -390,8 +398,11 @@ def ver_asistencia(request, asignatura_id):
         ASIS_ASIG_ID=asignatura
     ).select_related('ASIS_PEPE_ID', 'ASIS_SINO_PRESENTE')
 
-    # Obtener estudiantes del curso
-    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+    # Obtener solo los estudiantes (alumnos) del curso
+    estudiantes = PersonasPerfiles.objects.filter(
+        PEPE_CURS_ID=asignatura.ASI_CURS_ID,
+        PEPE_PERF_ID=22  # Filtrar solo perfiles de tipo 'Alumno'
+    )
 
     # Crear un diccionario de asistencias por estudiante
     asistencia_por_estudiante = {}
@@ -399,25 +410,24 @@ def ver_asistencia(request, asignatura_id):
 
     for estudiante in estudiantes:
         estudiante_id = estudiante.PEPE_ID
+        # Inicializar cada estudiante en el diccionario con asistencias vacías
         asistencia_por_estudiante[estudiante_id] = {
             'total_asistencias': 0,
             'total_dias': len(fechas_unicas),  # Iniciar con el total de días igual al número de fechas únicas
-            'asistencias': {}
+            'asistencias': {fecha: None for fecha in fechas_unicas}  # Asistencia 'N/A' por defecto
         }
-        
-        # Inicializar cada fecha con una asistencia "ausente" por defecto
-        for fecha in fechas_unicas:
-            asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = None  # Esto indica "N/A" en el template si no hay asistencia real
 
     # Rellenar las asistencias reales
     for asistencia in asistencias:
         estudiante_id = asistencia.ASIS_PEPE_ID.PEPE_ID
         fecha = asistencia.ASIS_FECHA
-        asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = asistencia
+        # Verificar si el estudiante está en el diccionario antes de asignar
+        if estudiante_id in asistencia_por_estudiante:
+            asistencia_por_estudiante[estudiante_id]['asistencias'][fecha] = asistencia
 
-        # Contar las asistencias
-        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True":  # Verifica si el estudiante está presente
-            asistencia_por_estudiante[estudiante_id]['total_asistencias'] += 1
+            # Contar las asistencias
+            if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True":  # Verifica si el estudiante está presente
+                asistencia_por_estudiante[estudiante_id]['total_asistencias'] += 1
 
     # Calcular el porcentaje de asistencia para cada estudiante
     for estudiante_id, datos in asistencia_por_estudiante.items():
@@ -469,7 +479,7 @@ def ver_notas_estudiante(request):
     # Obtener las asignaturas en las que está inscrito el estudiante
     asignaturas = Asignaturas.objects.filter(ASI_CURS_ID=estudiante.PEPE_CURS_ID)
 
-    # Crear un diccionario para almacenar notas y asistencia
+    # Crear un diccionario para almacenar notas, asistencia y anotaciones
     datos_por_asignatura = {}
 
     for asignatura in asignaturas:
@@ -506,14 +516,20 @@ def ver_notas_estudiante(request):
         else:
             porcentaje_asistencia = 0  # Evitar división por cero
 
+        # Obtener anotaciones relacionadas con el estudiante y la asignatura actual
+        anotaciones = Anotaciones.objects.filter(
+            ANOT_PEPE_ID=estudiante,
+            ANOT_ASIG_ID=asignatura
+        )
+
         # Almacenar la información en el diccionario
         datos_por_asignatura[asignatura] = {
             'notas': notas,
             'promedio': promedio,
-            # Total de días de clases, incluyendo N/A
             'total_clases': total_dias,
             'total_clases_asistidas': total_asistencias,
-            'porcentaje_asistencia': round(porcentaje_asistencia, 2)
+            'porcentaje_asistencia': round(porcentaje_asistencia, 2),
+            'anotaciones': anotaciones,  # Añadir anotaciones al contexto
         }
 
     context = {
@@ -525,33 +541,54 @@ def ver_notas_estudiante(request):
 
 
 @login_required
-def anotaciones_por_asignatura(request, asignatura_id):
+def listar_alumnos_por_asignatura(request, asignatura_id):
     # Obtener la asignatura específica
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
     
-    # Obtener las anotaciones relacionadas con la asignatura
-    anotaciones = Anotaciones.objects.filter(ANOT_ASIG_ID=asignatura)
+    # Filtrar estudiantes con el perfil "Alumno" (perfil con PERF_ID = 22)
+    alumnos = PersonasPerfiles.objects.filter(
+        PEPE_CURS_ID=asignatura.ASI_CURS_ID,
+        PEPE_PERF_ID__PERF_ID=22
+    )
     
-    # Obtener estudiantes del curso relacionado con la asignatura
-    estudiantes = PersonasPerfiles.objects.filter(PEPE_CURS_ID=asignatura.ASI_CURS_ID)
+    context = {
+        'asignatura': asignatura,
+        'alumnos': alumnos
+    }
     
-    # Crear un formulario para agregar una nueva anotación
+    return render(request, 'anotaciones/anotaciones.html', context)
+
+@login_required
+def agregar_anotacion(request, asignatura_id, alumno_id):
+    asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)
+    alumno = get_object_or_404(PersonasPerfiles, PEPE_ID=alumno_id)
+
     if request.method == 'POST':
         form = AnotacionForm(request.POST)
         if form.is_valid():
             nueva_anotacion = form.save(commit=False)
-            nueva_anotacion.ANOT_ASIG_ID = asignatura  # Asignar la asignatura actual a la anotación
-            nueva_anotacion.ANOT_CURS_ID = asignatura.ASI_CURS_ID  # Asignar el curso de la asignatura
+            nueva_anotacion.ANOT_PEPE_ID = alumno  # Asignar automáticamente el alumno seleccionado
+            nueva_anotacion.ANOT_CURS_ID = alumno.PEPE_CURS_ID  # También asignar el curso
+            nueva_anotacion.ANOT_ASIG_ID = asignatura  # Asignar la asignatura
             nueva_anotacion.save()
             return redirect('anotaciones_por_asignatura', asignatura_id=asignatura_id)
     else:
         form = AnotacionForm()
-    
+
     context = {
-        'asignatura': asignatura,
-        'anotaciones': anotaciones,
-        'estudiantes': estudiantes,
         'form': form,
+        'alumno': alumno,
+        'asignatura': asignatura,
     }
+    return render(request, 'anotaciones/agregar_anotacion.html', context)
+
+def get_alumnos_por_curso(request, curso_id):
+    # Obtener solo los perfiles de alumnos del curso seleccionado
+    alumnos = PersonasPerfiles.objects.filter(
+        PEPE_CURS_ID=curso_id,
+        PEPE_PERF_ID__PERF_NOMBRE='Alumno'
+    ).values('PEPE_ID', 'PEPE_PERS_ID__PERS_NOMBRECOMPLETO')
     
-    return render(request, 'anotaciones/anotaciones.html', context)
+    # Crear una lista con los datos de los alumnos
+    alumnos_list = list(alumnos)
+    return JsonResponse(alumnos_list, safe=False)

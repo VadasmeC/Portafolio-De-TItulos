@@ -5,47 +5,56 @@
 <div class="container mt-3">
     <h2>Asistencia - {{ asignatura.ASI_NOMBRE }}</h2>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Estudiante</th>
-                {% for fecha in fechas_unicas %}
-                    <th>{{ fecha|date:"d/m" }}</th>
-                {% endfor %}
-                <th>Porcentaje de Asistencia</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for estudiante in estudiantes %}
-            <tr>
-                <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
-                
-                {% for fecha in fechas_unicas %}
+    {% if estudiantes|length == 0 %}
+        <div class="alert alert-warning" role="alert">
+            No hay estudiantes registrados en este curso.
+        </div>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    {% for fecha in fechas_unicas %}
+                        <th>{{ fecha|date:"d/m" }}</th>
+                    {% endfor %}
+                    <th>Porcentaje de Asistencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                <tr>
+                    <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                    
+                    {% for fecha in fechas_unicas %}
+                        <td>
+                            {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID|default_if_none:'' %}
+                                {% if asistencia.asistencias|get_item:fecha %}
+                                    {% with registro=asistencia.asistencias|get_item:fecha %}
+                                        {% if registro.ASIS_SINO_PRESENTE.SINO_ESTADO == "True" %}
+                                            Presente <a href="{% url 'editar_asistencia' registro.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
+                                        {% else %}
+                                            Ausente <a href="{% url 'editar_asistencia' registro.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    {% endfor %}
+                    
                     <td>
-                        {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID|default_if_none:'' %}
-                            {% if asistencia.asistencias|get_item:fecha %}
-                                {% with registro=asistencia.asistencias|get_item:fecha %}
-                                    {% if registro.ASIS_SINO_PRESENTE.SINO_ESTADO == "True" %}
-                                        Presente <a href="{% url 'editar_asistencia' registro.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
-                                    {% else %}
-                                        Ausente <a href="{% url 'editar_asistencia' registro.ASIS_ID %}" class="btn btn-sm btn-warning">Editar</a>
-                                    {% endif %}
-                                {% endwith %}
-                            {% else %}
-                                N/A
-                            {% endif %}
+                        {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID %}
+                            {{ asistencia.porcentaje_asistencia|default:0|floatformat:2 }}%
                         {% endwith %}
                     </td>
+                </tr>
                 {% endfor %}
-                
-                <td>
-                    {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID %}
-                        {{ asistencia.porcentaje_asistencia|default:0|floatformat:2 }}%
-                    {% endwith %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    {% endif %}
+    <!-- Botón para ir a ver las asignaturas -->
+    <a href="{% url 'index_profesor' %}" class="btn btn-secondary mt-3">Volver a asignaturas</a>
 </div>
+
 {% endblock %}

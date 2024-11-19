@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Agregar Anotación para {{ alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</h2>
+    <h4>Asignatura: {{ asignatura.ASI_NOMBRE }}</h4>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }} <!-- Mostrar el formulario de anotación -->
+        <button type="submit" class="btn btn-primary">Guardar Anotación</button>
+    </form>
+
+    <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-secondary mt-3">Volver a lista de alumnos</a>
+</div>
+{% endblock %}

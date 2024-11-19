@@ -1,32 +1,79 @@
 {% extends 'core/base.html' %}
-
-{% block content %}
 {% load static %}
 {% load crispy_forms_tags %}
 
-
+{% block content %}
 <form action="" method="post">
     {% csrf_token %}
 
     <div class="card mx-auto" style="width: 30rem;">
-      <div class="card-body">
-        <h5 class="card-title">Ingrese perfil nuevo</h5>
-        {{ form | crispy }}
-        <button class="btn btn-sm btn-primary float-end" type="submit">Subir</button>
-        {% if messages %}
-        <div class="alert alert-success" role="alert">
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
+        <div class="card-body">
+            <h5 class="card-title">Ingrese perfil nuevo</h5>
+            {{ form|crispy }}
+
+            <!-- Contenedor para la lista de alumnos actualizada -->
+            <div id="responsable-container">
+                <label for="id_PEPE_PEPE_RESPONSABLE">Responsable (Alumno):</label>
+                <select id="id_PEPE_PEPE_RESPONSABLE" name="PEPE_PEPE_RESPONSABLE" class="form-control">
+                    <option value="">Seleccione un curso primero</option>
+                </select>
+            </div>
+
+            <button class="btn btn-sm btn-primary float-end" type="submit">Subir</button>
+            {% if messages %}
+            <div class="alert alert-success" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-      </div>
     </div>
 </form>
-    <!--JS de Bootstrap aquí -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{% static 'js/form-validation.js' %}"></script>
 
+<!-- Agrega jQuery para manejar la actualización -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Escuchar cambios en el campo PEPE_CURS_ID (curso)
+    $('#id_PEPE_CURS_ID').change(function() {
+        var cursoId = $(this).val();
+        if (cursoId) {
+            // Realizar petición AJAX para obtener alumnos del curso seleccionado
+            $.ajax({
+                url: '/get-alumnos-por-curso/' + cursoId + '/',
+                type: 'GET',
+                success: function(data) {
+                    // Eliminar cualquier opción anterior en PEPE_PEPE_RESPONSABLE
+                    $('#id_PEPE_PEPE_RESPONSABLE').empty();
+                    
+                    // Añadir opción por defecto
+                    $('#id_PEPE_PEPE_RESPONSABLE').append($('<option>', {
+                        value: '',
+                        text: 'Seleccione un alumno'
+                    }));
 
-
+                    // Añadir cada alumno recibido
+                    $.each(data, function(index, alumno) {
+                        $('#id_PEPE_PEPE_RESPONSABLE').append($('<option>', {
+                            value: alumno.PEPE_ID,
+                            text: alumno.PEPE_PERS_ID__PERS_NOMBRECOMPLETO
+                        }));
+                    });
+                },
+                error: function() {
+                    alert('Error al obtener los alumnos del curso.');
+                }
+            });
+        } else {
+            // Limpiar el select si no hay curso seleccionado
+            $('#id_PEPE_PEPE_RESPONSABLE').empty();
+            $('#id_PEPE_PEPE_RESPONSABLE').append($('<option>', {
+                value: '',
+                text: 'Seleccione un curso primero'
+            }));
+        }
+    });
+});
+</script>
 {% endblock %}
