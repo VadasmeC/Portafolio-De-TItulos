@@ -42,6 +42,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <a href="{% url 'crear_persona_perfil' %}" class="btn btn-sm btn-success">Nuevo perfil</a>
     {% else %}
         <p>No hay asignaturas asociadas a este curso.</p>
     {% endif %}

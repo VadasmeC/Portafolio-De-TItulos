@@ -11,13 +11,6 @@
             <h5 class="card-title">Ingrese perfil nuevo</h5>
             {{ form|crispy }}
 
-            <!-- Contenedor para la lista de alumnos actualizada -->
-            <div id="responsable-container">
-                <label for="id_PEPE_PEPE_RESPONSABLE">Responsable (Alumno):</label>
-                <select id="id_PEPE_PEPE_RESPONSABLE" name="PEPE_PEPE_RESPONSABLE" class="form-control">
-                    <option value="">Seleccione un curso primero</option>
-                </select>
-            </div>
 
             <button class="btn btn-sm btn-primary float-end" type="submit">Subir</button>
             {% if messages %}
@@ -60,6 +53,9 @@ $(document).ready(function() {
                             text: alumno.PEPE_PERS_ID__PERS_NOMBRECOMPLETO
                         }));
                     });
+
+                    // Mostrar en consola los datos recibidos (opcional)
+                    console.log('Alumnos recibidos:', data);
                 },
                 error: function() {
                     alert('Error al obtener los alumnos del curso.');

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm, AsistenciaEditForm, AnotacionForm
+from .forms import CustomUserCreationForm, PersonasPerfilesForm, PublicacionForm, NotasForm, NotaEditForm, AsistenciaEditForm, AnotacionForm, CursosForm, AsignaturasForm, AnotacionesTiposForm, PublicacionesTiposForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
@@ -51,8 +51,22 @@ def home(request):
     return render(request, 'core/home.html', context)
 
 @login_required
-def test(request):
-    return render(request, 'core/test.html')
+def crear_persona_perfil(request):
+    if request.method == 'POST':
+        form = PersonasPerfilesForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Perfil creado exitosamente.")
+            return redirect('crear_persona_perfil')  # Redirige a la página deseada después de crear el perfil
+        else:
+            messages.error(request, "Hubo un error al crear el perfil.")
+    else:
+        form = PersonasPerfilesForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'core/crear_persona_perfil.html', context)
 
 
 @login_required
@@ -60,7 +74,10 @@ def perfil(request):
     perfiles_con_cursos = defaultdict(list)
     es_profesor = False
     es_alumno = False
+    es_apoderado = False
+    es_admin = False
     asignaturas_estudiante = []  # Para almacenar las asignaturas del estudiante
+    alumnos_a_cargo = []  # Para almacenar los alumnos a cargo del apoderado
 
     if hasattr(request.user, 'personas'):
         persona = request.user.personas
@@ -77,7 +94,7 @@ def perfil(request):
                 'curso': curso,
             })
 
-            # Verificar si el perfil es de profesor o alumno
+            # Verificar si el perfil es de profesor, alumno o apoderado
             if perfil.PEPE_PERF_ID.PERF_ID == 1:
                 es_profesor = True
             
@@ -86,6 +103,17 @@ def perfil(request):
                 # Obtener las asignaturas en las que está inscrito el alumno
                 asignaturas_estudiante = Asignaturas.objects.filter(ASI_CURS_ID=perfil.PEPE_CURS_ID)
 
+            if perfil.PEPE_PERF_ID.PERF_ID == 21:
+                es_apoderado = True
+                # Obtener los alumnos a cargo del apoderado
+                if hasattr(perfil, 'PEPE_PEPE_RESPONSABLE') and perfil.PEPE_PEPE_RESPONSABLE:
+                # Utiliza la instancia correcta de PersonasPerfiles para filtrar
+                    alumnos_a_cargo = PersonasPerfiles.objects.filter(PEPE_PEPE_RESPONSABLE=perfil)
+                else:
+                    alumnos_a_cargo = []
+            if perfil.PEPE_PERF_ID.PERF_ID == 23:
+                es_profesor = True
+
     # Convertir defaultdict a un diccionario estándar
     perfiles_con_cursos = dict(perfiles_con_cursos)
 
@@ -93,7 +121,10 @@ def perfil(request):
         'perfiles_con_cursos': perfiles_con_cursos,
         'es_profesor': es_profesor,
         'es_alumno': es_alumno,
-        'asignaturas_estudiante': asignaturas_estudiante,  # Pasar asignaturas
+        'es_apoderado': es_apoderado,
+        'es_admin': es_admin,
+        'asignaturas_estudiante': asignaturas_estudiante,
+        'alumnos_a_cargo': alumnos_a_cargo,  # Pasar alumnos a cargo si es apoderado
     }
 
     if request.method == 'POST':
@@ -105,7 +136,7 @@ def perfil(request):
         request.session['perfil_id'] = perfil_id
         request.session['curso_id'] = curso_id
 
-        # Obtener el perfil seleccionado para determinar si es profesor o alumno
+        # Obtener el perfil seleccionado para determinar si es profesor, alumno o apoderado
         try:
             perfil = persona.perfiles.get(PEPE_ID=perfil_id)
             perfil_tipo = None
@@ -114,6 +145,11 @@ def perfil(request):
                 perfil_tipo = 'Profesor'
             elif perfil.PEPE_PERF_ID.PERF_ID == 22:
                 perfil_tipo = 'Alumno'
+            elif perfil.PEPE_PERF_ID.PERF_ID == 21:
+                perfil_tipo = 'Apoderado'
+            elif perfil.PEPE_PERF_ID.PERF_ID == 23:
+                perfil_tipo = 'Admin'    
+
 
             # Enviar el tipo de perfil en la respuesta JSON
             return JsonResponse({'success': True, 'perfil_tipo': perfil_tipo})
@@ -146,19 +182,7 @@ def registro(request):
         data["form"] = user_creation_form
 
     return render(request, 'registration/registro.html', data)
-# vista para crear perfil persona
-@login_required
-def crear_persona_perfil(request):
-    if request.method == 'POST':
-        form = PersonasPerfilesForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'El perfil ha sido subido correctamente.')
-            return redirect('test')  # Redirige a alguna página de éxito después de guardar
-    else:
-        form = PersonasPerfilesForm()
 
-    return render(request, 'core/test.html', {'form': form})
 # vista para crear publicaciones
 @login_required
 def crear_publicacion(request):
@@ -582,6 +606,7 @@ def agregar_anotacion(request, asignatura_id, alumno_id):
     }
     return render(request, 'anotaciones/agregar_anotacion.html', context)
 
+@login_required
 def get_alumnos_por_curso(request, curso_id):
     # Obtener solo los perfiles de alumnos del curso seleccionado
     alumnos = PersonasPerfiles.objects.filter(
@@ -591,4 +616,153 @@ def get_alumnos_por_curso(request, curso_id):
     
     # Crear una lista con los datos de los alumnos
     alumnos_list = list(alumnos)
+    
     return JsonResponse(alumnos_list, safe=False)
+
+@login_required
+def ver_alumnos_a_cargo(request):
+    # Obtener todos los perfiles del apoderado logueado
+    perfiles_apoderado = PersonasPerfiles.objects.filter(
+        PEPE_PERS_ID=request.user.personas,
+        PEPE_PERF_ID__PERF_NOMBRE='Apoderado'
+    )
+
+    # Si el apoderado tiene al menos un perfil registrado
+    if perfiles_apoderado.exists():
+        alumnos_a_cargo = []
+
+        # Buscar los alumnos a cargo en función de cada perfil de apoderado
+        for perfil_apoderado in perfiles_apoderado:
+            alumnos = PersonasPerfiles.objects.filter(
+                PEPE_PEPE_RESPONSABLE=perfil_apoderado.PEPE_ID, 
+                PEPE_PERF_ID__PERF_ID=22  # Filtrar solo los alumnos
+            )
+            alumnos_a_cargo.extend(alumnos)
+
+        # Preparar la información organizada por asignatura para cada alumno
+        alumnos_info = []
+        for alumno in alumnos_a_cargo:
+            # Obtener las asignaturas en las que está inscrito el alumno
+            asignaturas = Asignaturas.objects.filter(ASI_CURS_ID=alumno.PEPE_CURS_ID)
+            datos_por_asignatura = {}
+
+            for asignatura in asignaturas:
+                # Obtener notas para cada asignatura
+                notas = Notas.objects.filter(NOTA_PEPE_ID=alumno.PEPE_ID, NOTA_ASIG_ID=asignatura)
+                if notas.exists():
+                    promedio = sum(nota.NOTA_VALOR for nota in notas) / len(notas)
+                else:
+                    promedio = 0
+                
+                # Obtener asistencia para la asignatura actual
+                asistencias = Asistencia.objects.filter(
+                    ASIS_CURS_ID=asignatura.ASI_CURS_ID,
+                    ASIS_ASIG_ID=asignatura
+                )
+
+                # Calcular las fechas únicas de las clases registradas para la asignatura
+                fechas_unicas = sorted({asistencia.ASIS_FECHA for asistencia in asistencias})
+                total_dias = len(fechas_unicas)  # Total de días únicos en los que hubo clases
+
+                # Inicializar datos de asistencia
+                total_asistencias = 0
+                
+                # Calcular asistencias reales, incluyendo N/A
+                for fecha in fechas_unicas:
+                    asistencia = asistencias.filter(ASIS_FECHA=fecha, ASIS_PEPE_ID=alumno.PEPE_ID).first()
+                    if asistencia and asistencia.ASIS_SINO_PRESENTE:
+                        if asistencia.ASIS_SINO_PRESENTE.SINO_ESTADO == "True":
+                            total_asistencias += 1
+
+                # Calcular el porcentaje de asistencia, incluyendo los N/A
+                if total_dias > 0:
+                    porcentaje_asistencia = (total_asistencias / total_dias) * 100
+                else:
+                    porcentaje_asistencia = 0  # Evitar división por cero
+
+                # Obtener anotaciones relacionadas con el alumno y la asignatura actual
+                anotaciones = Anotaciones.objects.filter(
+                    ANOT_PEPE_ID=alumno,
+                    ANOT_ASIG_ID=asignatura
+                )
+
+                # Almacenar la información en el diccionario
+                datos_por_asignatura[asignatura] = {
+                    'notas': notas,
+                    'promedio': round(promedio, 2),
+                    'total_clases': total_dias,
+                    'total_clases_asistidas': total_asistencias,
+                    'porcentaje_asistencia': round(porcentaje_asistencia, 2),
+                    'anotaciones': anotaciones,
+                }
+
+            # Agregar información del alumno al contexto
+            alumnos_info.append({
+                'alumno': alumno,
+                'datos_por_asignatura': datos_por_asignatura,
+            })
+
+        context = {
+            'alumnos_info': alumnos_info,
+        }
+
+        return render(request, 'core/ver_alumnos_a_cargo.html', context)
+
+    else:
+        # Si no es apoderado o no tiene perfiles, redirigir a su perfil
+        return redirect('perfil')
+    
+@login_required
+def crear_curso(request):
+    if request.method == 'POST':
+        form = CursosForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')  # Redirige al perfil de admin después de guardar
+    else:
+        form = CursosForm()
+    
+    context = {'form': form}
+    return render(request, 'core/formulario_curso.html', context)
+
+
+@login_required
+def crear_asignatura(request):
+    if request.method == 'POST':
+        form = AsignaturasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+    else:
+        form = AsignaturasForm()
+    
+    context = {'form': form}
+    return render(request, 'core/formulario_asignatura.html', context)
+
+@login_required
+def crear_anotacion_tipo(request):
+    if request.method == 'POST':
+        form = AnotacionesTiposForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+    else:
+        form = AnotacionesTiposForm()
+    
+    context = {'form': form}
+    return render(request, 'core/formulario_anotacion_tipo.html', context)
+
+@login_required
+def crear_tipo_publicacion(request):
+    if request.method == 'POST':
+        form = PublicacionesTiposForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tipo de publicación creado con éxito.')
+            return redirect('crear_tipo_publicacion')  # Redirigir a la página del perfil o donde prefieras
+        else:
+            messages.error(request, 'Hubo un error al crear el tipo de publicación.')
+    else:
+        form = PublicacionesTiposForm()
+    
+    return render(request, 'core/crear_tipo_publicacion.html', {'form': form})

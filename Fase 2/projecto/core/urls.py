@@ -1,10 +1,10 @@
 
 from django.urls import path
-from .views import home, test, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante, listar_alumnos_por_asignatura, agregar_anotacion, get_alumnos_por_curso
+from .views import home, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante, listar_alumnos_por_asignatura, agregar_anotacion, get_alumnos_por_curso, ver_alumnos_a_cargo, crear_anotacion_tipo, crear_asignatura,crear_curso, crear_tipo_publicacion
 
 urlpatterns = [
     path('', home, name='home'),
-    path('crear_persona_perfil/', crear_persona_perfil, name='test'),
+    path('crear_persona_perfil/', crear_persona_perfil, name='crear_persona_perfil'),
     path('registro/', registro, name='registro'),
     path('perfil/', perfil, name='perfil'),
     path('perfil/perfil_estudiante/', ver_notas_estudiante, name='ver_notas_estudiante'),
@@ -22,4 +22,10 @@ urlpatterns = [
     path('anotaciones/asignatura/<int:asignatura_id>/',listar_alumnos_por_asignatura, name='anotaciones_por_asignatura'),
     path('anotaciones/asignatura/<int:asignatura_id>/alumno/<int:alumno_id>/agregar/',agregar_anotacion, name='agregar_anotacion'),
     path('get-alumnos-por-curso/<int:curso_id>/', get_alumnos_por_curso, name='get_alumnos_por_curso'),
+    path('perfil/perfil_apoderado/', ver_alumnos_a_cargo, name='ver_alumnos_a_cargo'),
+    path('crear-curso/', crear_curso, name='crear_curso'),
+    path('crear-asignatura/', crear_asignatura, name='crear_asignatura'),
+    path('crear-anotacion-tipo/', crear_anotacion_tipo, name='crear_anotacion_tipo'),
+    path('crear-tipo-publicacion/', crear_tipo_publicacion, name='crear_tipo_publicacion'),
+
 ]

@@ -26,13 +26,34 @@
                     <li>
                         <strong>{{ tipo_perfil }}</strong>
                         <ul>
-                            {% for curso in cursos %}
+                            {% if tipo_perfil == 'Apoderado' %}
+                                <!-- Si el perfil es Apoderado, solo mostrar opción de ver información de alumnos -->
                                 <li>
-                                    <a href="#" class="seleccionar-curso" data-perfil-id="{{ curso.perfil_id }}" data-curso-id="{{ curso.curso }}">
-                                        Curso: {{ curso.curso }}
+                                    <a href="{% url 'ver_alumnos_a_cargo' %}" class="ver-info-alumnos">
+                                        Ver información de alumnos
                                     </a>
                                 </li>
-                            {% endfor %}
+                            {% elif tipo_perfil == 'Admin' %}
+                                <!-- Panel de administración para el perfil de Admin -->
+                                <div class="admin-panel">
+                                    <h3>Panel de Administración</h3>
+                                    <ul>
+                                        <li><a href="{% url 'crear_curso' %}">Crear Curso</a></li>
+                                        <li><a href="{% url 'crear_asignatura' %}">Crear Asignatura</a></li>
+                                        <li><a href="{% url 'crear_anotacion_tipo' %}">Crear Tipo de Anotación</a></li>
+                                        <li><a href="{% url 'crear_tipo_publicacion' %}">Crear Tipo de Publicación</a></li>
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <!-- Para otros perfiles, listar los cursos -->
+                                {% for curso in cursos %}
+                                    <li>
+                                        <a href="#" class="seleccionar-curso" data-perfil-id="{{ curso.perfil_id }}" data-curso-id="{{ curso.curso }}">
+                                            Curso: {{ curso.curso }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
                         </ul>
                     </li>
                 {% empty %}
@@ -153,6 +174,8 @@
                         window.location.href = "{% url 'index_profesor' %}";
                     } else if (data.perfil_tipo === 'Alumno') {
                         window.location.href = "{% url 'ver_notas_estudiante' %}";
+                    } else if (data.perfil_tipo === 'Apoderado') {
+                        window.location.href = "{% url 'ver_alumnos_a_cargo' %}";
                     }
                 } else {
                     alert('Hubo un problema con la selección. Por favor, inténtalo de nuevo.');
@@ -160,7 +183,6 @@
             });
         });
     });
-
     // Función para previsualizar la imagen seleccionada
     function previewImage(event) {
         const reader = new FileReader();

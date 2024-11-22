@@ -1,11 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from accounts.models import Personas, PersonasPerfiles
-from muro.models import Publicaciones
+from accounts.models import Personas, PersonasPerfiles, Cursos, Asignaturas
+from muro.models import Publicaciones, PublicacionesTipos
 from notas.models import Notas
 from asistencia.models import Asistencia
-from anotaciones.models import Anotaciones
+from anotaciones.models import Anotaciones, AnotacionesTipos
 
 #Formulario registro de personas
 class CustomUserCreationForm(UserCreationForm):
@@ -58,12 +58,12 @@ class CustomUserCreationForm(UserCreationForm):
 #Formulario personas_perfiles
 
 class PersonasPerfilesForm(forms.ModelForm):
-
     class Meta:
         model = PersonasPerfiles
-        fields = ['PEPE_PERS_ID', 'PEPE_CURS_ID', 'PEPE_PERF_ID']
-
-
+        fields = ['PEPE_PERS_ID', 'PEPE_CURS_ID', 'PEPE_PERF_ID', 'PEPE_PEPE_RESPONSABLE']
+        widgets = {
+            'PEPE_PEPE_RESPONSABLE': forms.Select(attrs={'id': 'id_PEPE_PEPE_RESPONSABLE'}),
+        }
 
 #Formulario publicaciones
 
@@ -108,5 +108,34 @@ class AnotacionForm(forms.ModelForm):
             'ANOT_TITULO': forms.TextInput(attrs={'class': 'form-control'}),
             'ANOT_DESCRIPCION': forms.Textarea(attrs={'class': 'form-control'}),
             'ANOT_ANOT_T_ID': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class CursosForm(forms.ModelForm):
+    class Meta:
+        model = Cursos
+        fields = ['CURS_NOMBRE', 'CURS_SALA', 'CURS_ANNO']
+
+class AsignaturasForm(forms.ModelForm):
+    class Meta:
+        model = Asignaturas
+        fields = ['ASI_NOMBRE', 'ASI_CURS_ID']
+
+class AnotacionesTiposForm(forms.ModelForm):
+    class Meta:
+        model = AnotacionesTipos
+        fields = ['ANOT_T_NOMBRE']
+
+class PublicacionesTiposForm(forms.ModelForm):
+    class Meta:
+        model = PublicacionesTipos
+        fields = ['PUTI_NOMBRE']
+        widgets = {
+            'PUTI_NOMBRE': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el nombre del tipo de publicación'
+            }),
+        }
+        labels = {
+            'PUTI_NOMBRE': 'Nombre del Tipo de Publicación',
         }
 
