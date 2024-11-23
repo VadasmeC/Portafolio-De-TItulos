@@ -200,8 +200,8 @@ def crear_publicacion(request):
             asunto = 'Nueva Publicación en el Sistema'
             mensaje = f'Se ha creado una nueva publicación: {publicacion.PUBL_TITULO}. Visita el sitio para más detalles.'
 
-            # Obtener correos de los usuarios con un perfil específico (por ejemplo, Apoderados)
-            apoderado_perfil_id = 21  # Ajusta el ID al perfil que necesites
+            # Obtener correos de los usuarios con un perfil apoderado
+            apoderado_perfil_id = 21  
             correos_usuarios = [
                 usuario.user.email
                 for usuario in Personas.objects.filter(
