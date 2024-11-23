@@ -17,6 +17,10 @@ from collections import defaultdict
 
 from anotaciones.models import Anotaciones
 
+from django.core.mail import send_mail
+from django.conf import settings
+
+
 
 # Create your views here.
 
@@ -192,6 +196,23 @@ def crear_publicacion(request):
             # Guardamos el formulario pero no lo confirmamos aún (commit=False)
             publicacion = form.save(commit=False)
             # Obtener el perfil de la persona autenticada
+            # Preparar la notificación por correo
+            asunto = 'Nueva Publicación en el Sistema'
+            mensaje = f'Se ha creado una nueva publicación: {publicacion.PUBL_TITULO}. Visita el sitio para más detalles.'
+
+            # Obtener correos de los usuarios con un perfil específico (por ejemplo, Apoderados)
+            apoderado_perfil_id = 21  # Ajusta el ID al perfil que necesites
+            correos_usuarios = [
+                usuario.user.email
+                for usuario in Personas.objects.filter(
+                    id__in=PersonasPerfiles.objects.filter(PEPE_PERF_ID=apoderado_perfil_id).values_list('PEPE_PERS_ID', flat=True)
+                )
+                if usuario.user.email
+            ]
+
+            # Enviar la notificación
+            enviar_notificacion_correo(asunto, mensaje, correos_usuarios)
+
             try:
                 perfil = request.user.personas.perfiles.first()
                 if perfil:
@@ -199,6 +220,7 @@ def crear_publicacion(request):
                 else:
                     # Manejar caso donde el usuario no tiene perfil asociado
                     return redirect('crear publicacion')
+            
             except PersonasPerfiles.DoesNotExist:
                 return redirect('crear publicacion')
             form.save()
@@ -766,3 +788,14 @@ def crear_tipo_publicacion(request):
         form = PublicacionesTiposForm()
     
     return render(request, 'core/crear_tipo_publicacion.html', {'form': form})
+
+
+def enviar_notificacion_correo(asunto, mensaje, destinatarios):
+    send_mail(
+        asunto,
+        mensaje,
+        settings.EMAIL_HOST_USER,
+        destinatarios,
+        fail_silently=False,
+    )
+
