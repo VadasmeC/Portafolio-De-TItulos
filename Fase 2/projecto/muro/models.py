@@ -34,3 +34,26 @@ class Publicaciones(models.Model):
         verbose_name_plural = 'Publicaciones'
         ordering = ['-PUBL_FECHACREACION']
 
+    @property
+    def comentarios(self):
+        return self.publicaciones_comentarios_set.all()
+
+
+
+
+class Publicaciones_Comentarios(models.Model):
+    PUCO_ID = models.AutoField(primary_key=True, verbose_name='Id de comentario')
+    PUCO_COMENTARIO = models.CharField(max_length=200, verbose_name='comentario')
+    PUCO_FECHACREACION = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
+    
+    # Relaciones
+    PUCO_PUBL_ID = models.ForeignKey(Publicaciones, on_delete=models.CASCADE, verbose_name='Publicación')
+    PUCO_PEPE_ID = models.ForeignKey(PersonasPerfiles, on_delete=models.CASCADE, verbose_name='Autor')
+
+    def __str__(self):
+        return self.PUCO_COMENTARIO
+    
+    class Meta:
+        verbose_name = 'Comentario'
+        verbose_name_plural = 'Comentarios'
+        ordering = ['-PUCO_FECHACREACION']

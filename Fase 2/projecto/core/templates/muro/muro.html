@@ -1,32 +1,60 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<section class="about" style="background-color: #fdf5f5; padding-top: 100px; padding-bottom: 40px;">
+<div class="container mt-4">
+    <div class="row">
+        <!-- Título -->
+        <h2 class="text-center mb-4">Muro de Publicaciones</h2>
 
-    <!-- Título centrado -->
-    <h2 class="text-center" style="font-size: 3rem; color: #e4bdcc; margin-top: 0;">Muro</h2>
+        <!-- Publicaciones -->
+        <div class="feed col-12 col-md-8 offset-md-2">
+            {% for publicacion in publicaciones %}
+            <div class="post mb-4 shadow-sm">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{% static 'img/default-user.png' %}" alt="autor" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                    <div>
+                        <h5 class="mb-0">{{ publicacion.PUBL_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</h5>
+                        <small class="text-muted">Publicado el {{ publicacion.PUBL_FECHACREACION }}</small>
+                    </div>
+                </div>
+                <h4>{{ publicacion.PUBL_TITULO }}</h4>
+                <p>{{ publicacion.PUBL_DESCRIPCION }}</p>
+                {% if publicacion.PUBL_IMAGEN %}
+                <img src="{{ publicacion.PUBL_IMAGEN.url }}" class="img-fluid rounded mt-2" alt="imagen publicación">
+                {% endif %}
 
-    <div class="row mt-5">
-        {% for publicacion in publicaciones %}
-            <div class="col-12 col-md-6 mb-4">
-                <div class="card">
-                    <h5 class="card-title">{{ publicacion.PUBL_TITULO }}</h5>
-                    <p class="card-text">Creado por: {{ publicacion.PUBL_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</p>
-                    <p class="card-text">{{ publicacion.PUBL_DESCRIPCION }}</p>
-                    <p class="card-text"><small class="text-muted">Publicado el {{ publicacion.PUBL_FECHACREACION }}</small></p>
+                <!-- Botones de acción -->
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#comments-{{ publicacion.PUBL_ID }}">Comentar</button>
 
-                    {% if publicacion.PUBL_IMAGEN %}
-                        <img src="{{ publicacion.PUBL_IMAGEN.url }}" class="card-img-top" alt="" width="400" height="400" role="img">
-                    {% endif %}
-
-                    <!-- Botón para editar solo si el usuario es el autor -->
                     {% if request.user.personas.perfiles.first == publicacion.PUBL_PEPE_ID %}
-                        <a href="{% url 'editar_publicacion' publicacion.PUBL_ID %}" class="btn btn-primary mt-2">Editar</a>
+                    <a href="{% url 'editar_publicacion' publicacion.PUBL_ID %}" class="btn btn-outline-info btn-sm ms-2">Editar</a>
                     {% endif %}
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-</section>
 
+                <!-- Sección de comentarios -->
+                <div class="comments collapse mt-3" id="comments-{{ publicacion.PUBL_ID }}">
+                    {% for comentario in publicacion.publicaciones_comentarios_set.all %}
+                    <div class="comment">
+                        <strong>{{ comentario.PUCO_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}:</strong>
+                        <p>{{ comentario.PUCO_COMENTARIO }}</p>
+                        <small class="text-muted">{{ comentario.PUCO_FECHACREACION }}</small>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Formulario para agregar un comentario -->
+                    <form action="{% url 'agregar_comentario' publicacion.PUBL_ID %}" method="post" class="mt-3">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="comentario" class="form-control" placeholder="Escribe un comentario..." required>
+                            <button class="btn btn-primary" type="submit">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

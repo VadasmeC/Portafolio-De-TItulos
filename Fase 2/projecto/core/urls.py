@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import home, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante, listar_alumnos_por_asignatura, agregar_anotacion, get_alumnos_por_curso, ver_alumnos_a_cargo, crear_anotacion_tipo, crear_asignatura,crear_curso, crear_tipo_publicacion
+from .views import home, registro, exit, crear_persona_perfil, crear_publicacion, ver_publicaciones, ver_asignaturas, poner_nota, ver_notas_asignatura, editar_nota, registrar_asistencia, ver_asistencia,editar_asistencia, editar_publicacion,perfil, ver_notas_estudiante, listar_alumnos_por_asignatura, agregar_anotacion, get_alumnos_por_curso, ver_alumnos_a_cargo, crear_anotacion_tipo, crear_asignatura,crear_curso, crear_tipo_publicacion, agregar_comentario
 
 urlpatterns = [
     path('', home, name='home'),
@@ -27,5 +27,6 @@ urlpatterns = [
     path('crear-asignatura/', crear_asignatura, name='crear_asignatura'),
     path('crear-anotacion-tipo/', crear_anotacion_tipo, name='crear_anotacion_tipo'),
     path('crear-tipo-publicacion/', crear_tipo_publicacion, name='crear_tipo_publicacion'),
+    path('publicacion/<int:publicacion_id>/comentar/', agregar_comentario, name='agregar_comentario'),
 
 ]

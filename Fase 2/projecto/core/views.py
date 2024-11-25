@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from accounts.models import Personas, Perfiles
 from django.contrib import messages
 from accounts.models import Asignaturas, Perfiles, Cursos
-from muro.models import Publicaciones, PersonasPerfiles
+from muro.models import Publicaciones, PersonasPerfiles, Publicaciones_Comentarios
 from notas.models import Notas
 from sino.models import Sino
 from asistencia.models import Asistencia
@@ -799,3 +799,20 @@ def enviar_notificacion_correo(asunto, mensaje, destinatarios):
         fail_silently=False,
     )
 
+@login_required
+def agregar_comentario(request, publicacion_id):
+    publicacion = get_object_or_404(Publicaciones, PUBL_ID=publicacion_id)
+    if request.method == 'POST':
+        comentario_texto = request.POST.get('comentario')
+        perfil = request.user.personas.perfiles.first()  # Obtener el perfil del usuario autenticado
+        if perfil and comentario_texto:
+            comentario = Publicaciones_Comentarios.objects.create(
+                PUCO_COMENTARIO=comentario_texto,
+                PUCO_PUBL_ID=publicacion,
+                PUCO_PEPE_ID=perfil
+            )
+            comentario.save()
+            messages.success(request, "¡Comentario agregado!")
+        else:
+            messages.error(request, "No se pudo agregar el comentario.")
+    return redirect('muro')
