@@ -14,7 +14,7 @@
                 <div class="d-flex align-items-center mb-3">
                     <i class="bi bi-person-circle rounded-circle me-3" style="font-size: 50px; color: #6c757d;"></i>
                     <div>
-                        <h5 class="mb-0">{{ publicacion.PUBL_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</h5>
+                        <h5 class="mb-0">{{ publicacion.PUBL_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }} ({{ publicacion.PUBL_PEPE_ID.PEPE_PERF_ID}})</h5>
                         <small class="text-muted">Publicado el {{ publicacion.PUBL_FECHACREACION }}</small>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                 <div class="comments collapse mt-3" id="comments-{{ publicacion.PUBL_ID }}">
                     {% for comentario in publicacion.publicaciones_comentarios_set.all %}
                     <div class="comment">
-                        <strong>{{ comentario.PUCO_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}:</strong>
+                        <strong>{{ comentario.PUCO_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}({{ publicacion.PUBL_PEPE_ID.PEPE_PERF_ID}}):</strong>
                         <p>{{ comentario.PUCO_COMENTARIO }}</p>
                         <small class="text-muted">{{ comentario.PUCO_FECHACREACION }}</small>
                     </div>
