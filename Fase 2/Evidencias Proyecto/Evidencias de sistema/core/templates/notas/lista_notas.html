@@ -3,17 +3,20 @@
 {% load custom_filters %}
 
 {% block content %}
-    <div class="container mt-3">
-        <h2>Listado de Notas - {{ asignatura.ASI_NOMBRE }}</h2>
+<div class="container mt-3" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-center" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Listado de Notas - {{ asignatura.ASI_NOMBRE }}
+    </h2>
 
-        {% if mensaje %}
-            <div class="alert alert-warning" role="alert">
-                {{ mensaje }}
-            </div>
-        {% endif %}
+    {% if mensaje %}
+        <div class="alert alert-warning" role="alert" style="background-color: #fff8e1; border: 2px dashed #e4bdcc; border-radius: 10px;">
+            {{ mensaje }}
+        </div>
+    {% endif %}
 
-        <table class="table">
-            <thead>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered" style="border-color: #e4bdcc;">
+            <thead class="table-light">
                 <tr>
                     <th>Estudiante</th>
                     {% for i in max_notas|range_filter %}
@@ -33,7 +36,8 @@
                                 {{ nota.NOTA_VALOR }}
                                 {% if nota.NOTA_ID %}
                                     <!-- Botón para editar la nota -->
-                                    <a href="{% url 'editar_nota' nota.NOTA_ID %}" class="btn btn-sm btn-warning">
+                                    <a href="{% url 'editar_nota' nota.NOTA_ID %}" class="btn btn-sm" 
+                                       style="background-color: #e4bdcc; color: white; border-radius: 8px; border: none; padding: 5px 10px;">
                                         Editar
                                     </a>
                                 {% endif %}
@@ -51,7 +55,13 @@
                 {% endfor %}
             </tbody>
         </table>
-        <!-- Botón para ir a ver las asignaturas -->
-        <a href="{% url 'index_profesor' %}" class="btn btn-secondary mt-3">Volver a asignaturas</a>
     </div>
+
+    <!-- Botón para ir a ver las asignaturas -->
+    <div class="text-center">
+        <a href="{% url 'index_profesor' %}" class="btn btn-lg btn-secondary mt-3" style="border-radius: 8px;">
+            <i class="bi bi-arrow-left"></i> Volver a asignaturas
+        </a>
+    </div>
+</div>
 {% endblock %}

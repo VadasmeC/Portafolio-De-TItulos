@@ -1,35 +1,48 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Gestionar Anotaciones para {{ asignatura.ASI_NOMBRE }}</h2>
-    <h4>Seleccione un alumno para agregar anotación</h4>
+    <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Gestionar Anotaciones para {{ asignatura.ASI_NOMBRE }}
+    </h2>
+
+<div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h4 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 1.5rem;">
+        Seleccione un alumno para agregar anotación
+    </h4>
 
     <!-- Listado de alumnos -->
     {% if alumnos %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Alumno</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for alumno in alumnos %}
-                <tr>
-                    <td>{{ alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
-                    <td>
-                        <!-- Enlace para agregar anotación a este alumno -->
-                        <a href="{% url 'agregar_anotacion' asignatura.ASI_ID alumno.PEPE_ID %}" class="btn btn-primary">Agregar Anotación</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped" style="border-color: #e4bdcc;">
+                <thead class="table-light">
+                    <tr>
+                        <th>Alumno</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alumno in alumnos %}
+                    <tr>
+                        <td>{{ alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                        <td>
+                            <!-- Enlace para agregar anotación a este alumno -->
+                            <a href="{% url 'agregar_anotacion' asignatura.ASI_ID alumno.PEPE_ID %}" class="btn" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
+                                Agregar Anotación
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
         <p>No hay alumnos registrados para esta asignatura.</p>
     {% endif %}
 
-    <a href="{% url 'index_profesor' %}" class="btn btn-secondary mt-3">Volver a asignaturas</a>
+    <div class="text-center mt-4">
+        <a href="{% url 'index_profesor' %}" class="btn" style="background-color: #818183; color: white; border-radius: 8px;">
+            <i class="bi bi-arrow-left"></i> Volver a asignaturas
+        </a>
+    </div>
 </div>
 {% endblock %}

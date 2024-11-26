@@ -1,16 +1,28 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Agregar Anotación para {{ alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</h2>
-    <h4>Asignatura: {{ asignatura.ASI_NOMBRE }}</h4>
+<div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Agregar Anotación para {{ alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}
+    </h2>
+    <h4 class="text-center mb-4" style="color: #6c757d;">Asignatura: {{ asignatura.ASI_NOMBRE }}</h4>
     
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }} <!-- Mostrar el formulario de anotación -->
-        <button type="submit" class="btn btn-primary">Guardar Anotación</button>
+        <div class="mb-4">
+            {{ form.as_p }} <!-- Mostrar el formulario de anotación -->
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
+                Guardar Anotación
+            </button>
+        </div>
     </form>
 
-    <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-secondary mt-3">Volver a lista de alumnos</a>
+    <div class="text-center mt-4">
+        <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-secondary mt-3" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
+            <i class="bi bi-arrow-left"></i> Volver a lista de alumnos
+        </a>
+    </div>
 </div>
 {% endblock %}

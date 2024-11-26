@@ -1,14 +1,16 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4 text-center">Asignaturas del curso {{ curso.CURS_NOMBRE }}</h2>
+<div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h2 class="mb-4 text-center" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Asignaturas del curso {{ curso.CURS_NOMBRE }}
+    </h2>
     
     {% if asignaturas %}
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
+        <div class="card mb-4 shadow-sm" style="border: 2px solid #e4bdcc; border-radius: 8px;">
+            <div class="card-body" style="background-color: #fff;">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover table-bordered" style="border-color: #e4bdcc;">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
@@ -22,27 +24,27 @@
                                 <th scope="row">{{ forloop.counter }}</th>
                                 <td>{{ asignatura.ASI_NOMBRE }}</td>
                                 <td class="text-center">
-                                    <a href="{% url 'poner_nota' asignatura.ASI_ID %}" class="btn btn-primary btn-sm">
+                                    <a href="{% url 'poner_nota' asignatura.ASI_ID %}" class="btn btn-custom btn-login">
                                         <i class="bi bi-pencil-square"></i> Registrar Notas
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{% url 'ver_notas_asignatura' asignatura.ASI_ID %}" class="btn btn-primary btn-sm">
+                                    <a href="{% url 'ver_notas_asignatura' asignatura.ASI_ID %}" class="btn btn-custom btn-login">
                                         <i class="bi bi-journal-text"></i> Ver Notas
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{% url 'registrar_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-primary btn-sm">
+                                    <a href="{% url 'registrar_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-custom btn-login">
                                         <i class="bi bi-check-circle"></i> Registrar Asistencia
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{% url 'ver_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-primary btn-sm">
+                                    <a href="{% url 'ver_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-custom btn-login">
                                         <i class="bi bi-eye"></i> Ver Asistencia
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-primary btn-sm">
+                                    <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-custom btn-login">
                                         <i class="bi bi-sticky"></i> Gestionar Anotaciones
                                     </a>
                                 </td>
@@ -54,13 +56,13 @@
             </div>
         </div>
     {% else %}
-        <div class="alert alert-warning text-center">
+        <div class="alert alert-warning text-center" style="background-color: #fdf5f5; border: 2px dashed #e4bdcc; border-radius: 10px; padding: 15px;">
             No hay asignaturas asociadas a este curso.
         </div>
     {% endif %}
 
-    <div class="text-center">
-        <a href="{% url 'perfil' %}" class="btn btn-secondary">
+    <div class="text-center mt-4">
+        <a href="{% url 'perfil' %}" class="btn btn-secondary btn-lg" style="border-radius: 8px;">
             <i class="bi bi-arrow-left"></i> Volver a seleccionar perfil
         </a>
     </div>

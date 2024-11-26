@@ -1,14 +1,20 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-    <div class="container mt-3">
-        <h2>Editar Nota</h2>
+    <div class="container mt-3" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+            Editar Nota
+        </h2>
         
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Guardar cambios</button>
-            <a href="{% url 'ver_notas_asignatura' nota.NOTA_ASIG_ID.ASI_ID %}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
+                Guardar cambios
+            </button>
+            <a href="{% url 'ver_notas_asignatura' nota.NOTA_ASIG_ID.ASI_ID %}" class="btn" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
+                Cancelar
+            </a>
         </form>
     </div>
 {% endblock %}

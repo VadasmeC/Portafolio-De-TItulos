@@ -1,12 +1,51 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-    <div class="container mt-3">
-        <h2>Editar Publicación</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-success">Guardar cambios</button>
-        </form>
+<div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+    <!-- Contenedor del formulario -->
+    <div class="card shadow-sm" style="border-radius: 15px; border:4px dashed #e4bdcc; background-color: #fdf5f5; width: 100%; max-width: 600px;">
+        <div class="card-body">
+            <!-- Título del formulario -->
+            <h2 class="text-center mb-4" style="font-family: 'Verdana', sans-serif; font-size: 2.5rem; color: #6c757d;">
+                Editar Publicación
+            </h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Formulario de edición con mejor espaciado -->
+                <div class="mb-4">
+                    <div class="mb-3">
+                        <label for="{{ form.PUBL_TITULO.id_for_label }}" class="form-label" style="font-size: 1.25rem; color: #6c757d; font-family: 'Verdana', sans-serif;">Título:</label>
+                        {{ form.PUBL_TITULO }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.PUBL_DESCRIPCION.id_for_label }}" class="form-label" style="font-size: 1.25rem; color: #6c757d; font-family: 'Verdana', sans-serif;">Descripción:</label>
+                        {{ form.PUBL_DESCRIPCION }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.PUBL_IMAGEN.id_for_label }}" class="form-label" style="font-size: 1.25rem; color: #6c757d; font-family: 'Verdana', sans-serif;">Imagen:</label>
+                        {{ form.PUBL_IMAGEN }}
+                    </div>
+                </div>
+
+                <!-- Botón de guardar -->
+                <div class="text-center">
+                    <button type="submit" class="btn" style="background-color: #e4bdcc; color: white; border-radius: 8px; border: 1px solid #d4a6cc; padding: 10px 20px;">
+                        Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+
+<!-- Botón de volver centrado -->
+<div class="text-center mt-4">
+    <a href="{% url 'perfil' %}" class="btn btn-secondary" style="background-color: #d6d6d6; color: #6c757d; border-radius: 8px; padding: 10px 20px;">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
+</div>
 {% endblock %}

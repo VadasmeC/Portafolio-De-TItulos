@@ -1,11 +1,13 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Registrar Asistencia - {{ asignatura.ASI_NOMBRE }}</h2>
+<div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Registrar Asistencia - {{ asignatura.ASI_NOMBRE }}
+    </h2>
 
     {% if estudiantes.count == 0 %}
-        <div class="alert alert-warning text-center" role="alert">
+        <div class="alert alert-warning text-center" role="alert" style="background-color: #fff8e1; border: 2px dashed #e4bdcc; border-radius: 10px;">
             No hay estudiantes registrados en este curso.
         </div>
     {% else %}
@@ -40,7 +42,7 @@
                 </div>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-lg">
+                <button type="submit" class="btn btn-primary btn-lg" style="background-color: #e4bdcc; color: white;">
                     <i class="bi bi-save"></i> Guardar Asistencia
                 </button>
             </div>
@@ -48,11 +50,9 @@
     {% endif %}
     
     <div class="text-center mt-4">
-        <a href="{% url 'index_profesor' %}" class="btn btn-secondary">
+        <a href="{% url 'index_profesor' %}" class="btn btn-secondary" style="background-color: #969696; color: white;">
             <i class="bi bi-arrow-left"></i> Volver a asignaturas
         </a>
     </div>
 </div>
 {% endblock %}
-
-
