@@ -12,13 +12,14 @@
             {% for publicacion in publicaciones %}
             <div class="post mb-4 shadow-sm">
                 <div class="d-flex align-items-center mb-3">
-                    <img src="{% static 'img/default-user.png' %}" alt="autor" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-person-circle rounded-circle me-3" style="font-size: 50px; color: #6c757d;"></i>
                     <div>
                         <h5 class="mb-0">{{ publicacion.PUBL_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</h5>
                         <small class="text-muted">Publicado el {{ publicacion.PUBL_FECHACREACION }}</small>
                     </div>
                 </div>
                 <h4>{{ publicacion.PUBL_TITULO }}</h4>
+                <p>Tipo de publicacion: {{ publicacion.PUBL_PUTI_ID }}</p>
                 <p>{{ publicacion.PUBL_DESCRIPCION }}</p>
                 {% if publicacion.PUBL_IMAGEN %}
                 <img src="{{ publicacion.PUBL_IMAGEN.url }}" class="img-fluid rounded mt-2" alt="imagen publicación">
