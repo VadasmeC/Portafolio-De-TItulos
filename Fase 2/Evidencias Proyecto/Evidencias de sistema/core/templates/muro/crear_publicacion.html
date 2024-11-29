@@ -1,79 +1,61 @@
-    {% extends 'core/base.html' %}
+{% extends 'core/base.html' %}
 
-    {% block content %}
+{% block content %}
 
-    {% load crispy_forms_tags %}
-    {% load static %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <img src="{% static 'img/logo.png' %}" alt="logo" style="width: 205px;">
-        </a>
-        <a href="/" class="nav-link btn-home">Inicio</a>
+
+<h3 class="text-center mt-5">Crear Publicación</h3>
+
+<section class="about">
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-signin-wrapper">
+    {{ form | crispy }}
+
+    <button type="submit" class="btn btn-custom btn-login">Subir Publicación</button>
     </div>
-    </nav>
+</form>
+</section>
 
-    <!-- Título de la página -->
 
-    <h3 class="text-center mt-5">Crear Publicación</h3>
+{% if messages %}
+<div class="alert alert-success text-center mt-3" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
 
-    <!-- Sección de formulario de creación de publicación -->
-    <section class="about">
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <div class="form-signin-wrapper">
-        {{ form | crispy }}
-
-        <button type="submit" class="btn btn-custom btn-login">Subir Publicación</button>
-        </div>
-    </form>
-    </section>
-
-    <!-- Mensajes de éxito -->
-    {% if messages %}
-    <div class="alert alert-success text-center mt-3" role="alert">
-        {% for message in messages %}
-        {{ message }}
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <style>
-    /* Estilos generales */
-    body, html {
+<style>
+body, html {
     height: 100%;
     font-family: Helvetica, Arial, sans-serif;
     background-color: #fdf5f5;
     color: #333;
-    }
+}
 
-    /* Barra de navegación */
-    .navbar {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
 
-    h3 {
+h3 {
     margin-top: 80px;
     text-align: center;
     font-size: 2.5rem;
     font-family: 'Verdana', sans-serif;
     color: #e4bdcc;
-    }
+}
 
-    /*formulario */
-    .about {
+
+.about {
     display: flex;
     justify-content: center;
     align-items: center;
     height: calc(100vh - 160px); 
-    }
+}
 
-    /* Estilo del formulario */
-    .form-signin-wrapper {
+
+.form-signin-wrapper {
     width: 100%;
     max-width: 600px;
     padding: 20px;
@@ -83,10 +65,10 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 4px dashed #e4bdcc;
-    }
+}
 
-    /* Estilo de los botones */
-    .btn-custom {
+
+.btn-custom {
     width: 100%;
     font-size: 18px;
     font-weight: bold;
@@ -96,29 +78,29 @@
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+}
 
-    .btn-login {
+.btn-login {
     background-color: rgb(95, 218, 218);
     color: white;
-    }
+}
 
-    .btn-login:hover {
+.btn-login:hover {
     background-color: rgb(63, 216, 140);
-    }
+}
 
-    /* Estilo de los mensajes de éxito */
-    .alert {
+
+.alert {
     background-color: #d4edda;
     color: #155724;
     border-radius: 8px;
     padding: 15px;
     font-size: 1.1rem;
-    }
+}
 
-    .alert p {
+.alert p {
     margin: 0;
-    }
-    </style>
+}
+</style>
 
-    {% endblock %}
+{% endblock %}

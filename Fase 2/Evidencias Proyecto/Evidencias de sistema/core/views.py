@@ -816,3 +816,4 @@ def agregar_comentario(request, publicacion_id):
         else:
             messages.error(request, "No se pudo agregar el comentario.")
     return redirect('muro')
+

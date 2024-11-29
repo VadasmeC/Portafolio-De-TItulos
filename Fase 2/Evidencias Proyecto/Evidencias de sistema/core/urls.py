@@ -28,5 +28,6 @@ urlpatterns = [
     path('crear-anotacion-tipo/', crear_anotacion_tipo, name='crear_anotacion_tipo'),
     path('crear-tipo-publicacion/', crear_tipo_publicacion, name='crear_tipo_publicacion'),
     path('publicacion/<int:publicacion_id>/comentar/', agregar_comentario, name='agregar_comentario'),
+    
 
 ]

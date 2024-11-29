@@ -1,0 +1,117 @@
+
+html, body {
+    height: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #fdf5f5; 
+    color: #333;
+}
+
+
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+    width: 205px; /* Tamaño del logo en la barra */
+}
+
+/* Estilos para los botones */
+.btn-custom {
+    width: 100%; /* Ancho completo */
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 0;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-register {
+    background-color: #e5a0bb;
+    color: white;
+}
+
+.btn-register:hover {
+    background-color: #e27fa5;
+}
+
+.btn-login {
+    background-color: rgb(95, 218, 218);
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: rgb(63, 216, 140);
+}
+
+.btn-remember {
+    background-color: #f7d3ac;
+    color: white;
+}
+
+.btn-remember:hover {
+    background-color: #f5c58b;
+}
+
+/* Estilo del formulario */
+.form-signin-wrapper {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin: auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    border: 4px dashed #e4bdcc;
+}
+
+.form-signin .checkbox {
+    font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-signin h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px; 
+    margin-top: 5px; 
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.form-floating {
+    margin-bottom: 20px; 
+}
+
+.navbar .nav-link {
+    padding: 1px 5px;
+    color: #333;
+    font-weight: normal;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar .nav-link:hover {
+    color: #7dd191;
+}
+
+.navbar .nav-link:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Estilo para el casillero "Recordarme" */
+.remember-checkbox {
+    margin-bottom: 15px; /* Espacio entre el casillero y los botones */
+}
+
+.remember-checkbox label {
+    font-size: 14px;
+    color: #555;
+}

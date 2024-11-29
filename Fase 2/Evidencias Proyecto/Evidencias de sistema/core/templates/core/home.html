@@ -2,92 +2,7 @@
 {% load static %}
 {% block content %}
 
-<style>
-
-/* Estilo para la sección Hero */
-.hero {
-    position: relative;
-    width: 100%;
-    height: 60vh;
-    overflow: hidden;
-}
-
-.hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-/* Texto de la Hero */
-.hero-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-}
-
-/* Título de la Hero */
-.hero h1 {
-    font-size: 3.5rem; 
-    margin-bottom: 10px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif; 
-}
-
-/* Eslogan */
-.hero p {
-    font-size: 1.5rem; 
-    margin-bottom: 20px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
-}
-
-/* Estilo del botón en Hero */
-.hero-button {
-    padding: 15px 30px; 
-    font-size: 1.2rem; 
-    background-color: #e4bdcc;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center; 
-}
-
-.hero-button:hover {
-    background-color: #e79ab7;
-}
-
-/* Estilo de la sección Nuestra Historia */
-.nuestra-historia-wrapper {
-    max-width: 1000px; 
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 2px solid #e4bdcc;
-}
-
-.nuestra-historia-wrapper h2 {
-    font-size: 2.5rem; 
-    margin-bottom: 20px;
-    color: #e79ab7;
-    text-align: center;
-    font-family: 'Georgia', serif; 
-}
-
-.nuestra-historia-wrapper p {
-    font-size: 1.2rem; 
-    line-height: 1.8;
-    color: #333;
-    font-family: 'Arial', sans-serif; 
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
 <!-- Sección Hero -->
 <section class="hero">
@@ -95,7 +10,8 @@
     <div class="hero-text">
         <h1>¿Cómo crear publicaciones?</h1>
         <p>"Conectando Profesores y Apoderados, Una Publicación a la Vez"</p>
-        <button class="hero-button">Aquí</button>
+        <!-- Botón que lleva al instructivo -->
+        <a href="#instructivo" class="hero-button">Aquí</a>
     </div>
 </section>
 
@@ -116,4 +32,55 @@
     </div>
 </section>
 
+<!-- Carrusel de imágenes -->
+<section class="carousel-section">
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'img/bailes.jpg' %}" class="d-block w-100" alt="Baile 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Educación de Calidad</h5>
+                    <p>Imágenes representativas de nuestro compromiso con la educación.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/ejercicio.jpg' %}" class="d-block w-100" alt="Ejercicio 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Espacios Inclusivos</h5>
+                    <p>Aquí cada estudiante tiene su oportunidad de aprender y crecer.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/maestros.jpg' %}" class="d-block w-100" alt="Maestros 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Profesores Comprometidos</h5>
+                    <p>Un equipo de docentes dedicados a inspirar el amor por el aprendizaje.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<!-- Sección Instructivo de Publicaciones -->
+<section id="instructivo" class="instructivo-wrapper">
+    <h2>¿Cómo hacer una publicación?</h2>
+    <ol>
+        <li>Ingresa al sistema con tu usuario y contraseña.</li>
+        <li>Dirígete a la sección de publicaciones en el menú principal.</li>
+        <li>Haz clic en el botón "Crear publicación".</li>
+        <li>Completa el formulario con la información que deseas compartir.</li>
+        <li>Selecciona el tipo de publicación y adjunta cualquier archivo si es necesario.</li>
+        <li>Haz clic en "Publicar" y tu mensaje estará disponible para los apoderados.</li>
+    </ol>
+</section>
+
 {% endblock %}
+
