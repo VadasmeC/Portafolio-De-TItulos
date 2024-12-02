@@ -1,0 +1,146 @@
+
+/* Reset de margenes y padding */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #fdf5f5;
+    color: #333;
+}
+
+/* Título en wrapper transparente */
+.title-wrapper {
+    margin-top: 30px; /* Espacio fijo debajo de la navbar */
+    text-align: center;
+}
+
+h3 {
+    font-size: 2.5rem;
+    font-family: 'Arial', sans-serif;
+    color: #e4bdcc;
+    margin: 0;
+}
+
+/* Contenedor flex para formulario y notita */
+.form-container {
+    display: flex;
+    justify-content: center; /* Centra el contenido en el eje horizontal */
+    align-items: flex-start; /* Alinea los elementos al inicio en el eje vertical */
+    gap: 40px; /* Espacio entre el formulario y la notita */
+    margin-top: 30px; /* Espacio entre el título y los elementos */
+    max-width: 1200px; /* Máximo ancho del contenedor */
+    margin-left: 29%;
+    margin-right: auto;
+}
+
+/* Wrapper del formulario */
+.form-signin-wrapper {
+    width: 100%;
+    max-width: 600px; /* Ancho del formulario */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px dashed #e4bdcc;
+    margin-bottom: 30px;
+}
+
+/* Estilo de los títulos de los campos del formulario */
+.form-signin-wrapper label {
+    font-size: 1.2rem;
+    color: #6c757d;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+/* Botón */
+.btn-custom {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 0;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-login {
+    background-color: rgb(95, 218, 218);
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: rgb(63, 216, 140);
+}
+
+/* Mensaje de éxito */
+.alert {
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+.alert p {
+    margin: 0;
+}
+
+/* Estilo para la notita de instrucciones */
+.instructions-wrapper {
+    width: 100%;
+    max-width: 350px; /* Ancho limitado para la notita */
+}
+
+.instructions-card {
+    background-color: #fff;
+    padding: 20px;
+    border: 2px solid #e4bdcc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.instructions-card h4 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.instructions-card ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.instructions-card li {
+    margin-bottom: 10px;
+}
+
+/* Media Query para pantallas más pequeñas */
+@media (max-width: 768px) {
+    /* Hacer que los elementos se apilen en pantallas más pequeñas */
+    .form-container {
+        flex-direction: column; /* Los elementos se apilan verticalmente */
+        align-items: center; /* Centra los elementos horizontalmente */
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Ajustar el ancho de la notita y el formulario */
+    .form-signin-wrapper {
+        max-width: 100%; /* El formulario ocupará el 100% del ancho */
+    }
+
+    .instructions-wrapper {
+        max-width: 100%; /* La notita ocupará el 100% del ancho */
+        margin-top: 20px; /* Espacio entre el formulario y la notita */
+    }
+
+    .instructions-card {
+        margin-bottom: 20px; /* Espacio en la parte inferior de la notita */
+    }
+}

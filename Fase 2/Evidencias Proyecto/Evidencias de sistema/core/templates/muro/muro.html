@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends 'core/base.html' %} 
 {% load static %}
 
 {% block content %}
@@ -24,7 +24,7 @@
                                 <small class="text-muted">Publicado el {{ publicacion.PUBL_FECHACREACION }}</small>
                             </div>
                         </div>
-                        <h4 style="color: #e4bdcc;">{{ publicacion.PUBL_TITULO }}</h4>
+                        <h4 style="color: #c56a8d;">{{ publicacion.PUBL_TITULO }}</h4>
                         <p style="color: #6c757d;">Tipo de publicación: {{ publicacion.PUBL_PUTI_ID }}</p>
                         <p style="color: #6c757d;">{{ publicacion.PUBL_DESCRIPCION }}</p>
                         
@@ -35,7 +35,7 @@
                         <!-- Botones de acción -->
                         <div class="mt-3">
                             <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#comments-{{ publicacion.PUBL_ID }}" style="border-radius: 8px;">
-                                Comentar
+                                Comentarios
                             </button>
 
                             {% if request.user.personas.perfiles.first == publicacion.PUBL_PEPE_ID %}
@@ -61,7 +61,7 @@
                             <form action="{% url 'agregar_comentario' publicacion.PUBL_ID %}" method="post" class="mt-3">
                                 {% csrf_token %}
                                 <div class="input-group">
-                                    <input type="text" name="comentario" class="form-control" placeholder="Escribe un comentario..." required>
+                                    <input type="text" name="comentarios" class="form-control" placeholder="Escribe un comentario..." required>
                                     <button class="btn btn-primary" type="submit" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
                                         Enviar
                                     </button>

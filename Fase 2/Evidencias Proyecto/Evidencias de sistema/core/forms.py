@@ -26,12 +26,12 @@ class CustomUserCreationForm(UserCreationForm):
     )
     PERS_FECHANAC = forms.DateField(
         required=True,
-        label='Pers_fechanac'
+        label='Fecha de Nacimiento'
     )
     PERS_DIRECCION = forms.CharField(
         max_length=40,
         required=True,
-        label='Pers_direccion'
+        label='Dirección'
     )
 
     class Meta:

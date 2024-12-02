@@ -65,4 +65,50 @@
 
     {% block content %}{% endblock %}
 </body>
+<footer class="footer mt-5 py-3" style="background-color: #fff; color: #333;">
+  <div class="container">
+      <!-- Sección de Redes Sociales -->
+      <div class="d-flex justify-content-center mb-3">
+          <a href="https://www.facebook.com" class="mx-2" target="_blank" title="Facebook">
+              <i class="fab fa-facebook-square" style="font-size: 30px; color: #3b5998;"></i>
+          </a>
+          <a href="https://www.twitter.com" class="mx-2" target="_blank" title="Twitter">
+              <i class="fab fa-twitter-square" style="font-size: 30px; color: #1DA1F2;"></i>
+          </a>
+          <a href="https://www.instagram.com" class="mx-2" target="_blank" title="Instagram">
+              <i class="fab fa-instagram-square" style="font-size: 30px; color: #C13584;"></i>
+          </a>
+          <a href="https://www.linkedin.com" class="mx-2" target="_blank" title="LinkedIn">
+              <i class="fab fa-linkedin" style="font-size: 30px; color: #0077b5;"></i>
+          </a>
+      </div>
+      
+      <!-- Dirección del colegio con mapa -->
+      <div class="row justify-content-center">
+          <div class="col-12 text-center">
+              <h5 class="mb-3">Visítanos</h5>
+              <p>Calle Felicinda 131, Santiago, Chile</p>
+          </div>
+          <div class="col-12">
+              <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1359.507784849511!2d-70.64787833375733!3d-33.4696118169748!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c53f77158ee1%3A0xab0607441ff4f798!2s%C3%91uble%2C%20Santiago%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses!2scl!4v1733094962838!5m2!1ses!2scl"
+                  width="100%"
+                  height="300"
+                  style="border:0;"
+                  allowfullscreen=""
+                  loading="lazy">
+              </iframe>
+          </div>
+          
+      </div>
+
+      <!-- Copyright -->
+      <div class="text-center mt-3">
+          <p class="text-muted">© 2024 Colegio Niños Felices</p>
+      </div>
+  </div>
+</footer>
+{%load static%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </html>

@@ -1,5 +1,8 @@
 body {
-    background-color: #ffeef0;
+    font-family: Arial, sans-serif;
+    background-color: #f8e3ea; /* Color de fondo más suave */
+    margin: 0;
+    padding: 0;
 }
 
 .hero {
@@ -55,7 +58,8 @@ body {
     background-color: #f9c7d6;
 }
 
-.nuestra-historia-wrapper {
+.nuestra-historia-wrapper,
+.instructivo-wrapper {
     max-width: 1000px;
     margin: 40px auto;
     padding: 30px;
@@ -65,7 +69,8 @@ body {
     border: 2px solid #e4bdcc;
 }
 
-.nuestra-historia-wrapper h2 {
+.nuestra-historia-wrapper h2,
+.instructivo-wrapper h2 {
     font-size: 2.5rem;
     margin-bottom: 20px;
     color: #e79ab7;
@@ -92,24 +97,6 @@ body {
     background-color: #f9c7d6;
 }
 
-.instructivo-wrapper {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 2px solid #e4bdcc;
-}
-
-.instructivo-wrapper h2 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #e79ab7;
-    text-align: center;
-    font-family: 'Georgia', serif;
-}
-
 .instructivo-wrapper ol {
     font-size: 1.2rem;
     line-height: 1.8;
@@ -120,4 +107,199 @@ body {
 
 .instructivo-wrapper ol li {
     margin-bottom: 10px;
+}
+
+.profesores-premiados {
+    text-align: center;
+    padding: 2em 0;
+    background-color: #f9f9f9;
+}
+
+.premiados-container {
+    display: flex;
+    justify-content: center;
+    gap: 2em; /* Espacio entre los elementos */
+    flex-wrap: wrap; /* Asegura que los elementos se ajusten si no caben en una línea */
+}
+
+.premiado {
+    text-align: center;
+    max-width: 150px;
+}
+
+.premiado img {
+    width: 100px; 
+    height: 100px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid #eec0dc; 
+    margin-bottom: 0.5em; /* Espaciado entre la imagen y el texto */
+}
+
+.premiado p {
+    margin: 0.3em 0; /* Ajusta el espacio entre los textos */
+    font-size: 0.9em;
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 1024px) {
+    .hero h1 {
+        font-size: 2.8rem; /* Ajusta el tamaño del título */
+    }
+
+    .hero p {
+        font-size: 1.2rem; /* Ajusta el tamaño del párrafo */
+    }
+
+    .nuestra-historia-wrapper,
+    .instructivo-wrapper {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .carousel-item img {
+        height: 400px; /* Reduce la altura en pantallas más pequeñas */
+    }
+
+    .premiados-container {
+        gap: 1.5em; /* Reduce el espacio entre los elementos */
+    }
+
+    .premiado img {
+        width: 80px; /* Reduce el tamaño de las imágenes en pantallas medianas */
+        height: 80px;
+    }
+
+    .premiado p {
+        font-size: 0.8em; /* Ajusta el tamaño del texto */
+    }
+}
+
+/* Ajustes para móviles */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem; /* Ajusta el tamaño del título */
+    }
+
+    .hero p {
+        font-size: 1rem; /* Ajusta el tamaño del párrafo */
+    }
+
+    .hero-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .nuestra-historia-wrapper,
+    .instructivo-wrapper {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .carousel-item img {
+        height: 300px; /* Reduce la altura en móviles */
+    }
+
+    .premiados-container {
+        flex-direction: column; /* Apila los elementos verticalmente */
+        align-items: center;
+    }
+
+    .premiado {
+        margin-bottom: 1em;
+    }
+
+    .premiado img {
+        width: 70px; /* Reduce más el tamaño de las imágenes en móviles */
+        height: 70px;
+    }
+
+    .premiado p {
+        font-size: 0.7em; /* Ajusta el tamaño del texto */
+    }
+}
+
+.wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 30px;
+    border-top: 30px;
+    border-bottom: 30px;
+    border: 4px dashed #e4bdcc;
+    background-color: white;
+}
+
+main {
+    padding: 20px;
+}
+
+h2 {
+    color: #707070; /* Color plomo */
+}
+
+ol {
+    padding-left: 20px;
+}
+
+.step {
+    margin-bottom: 20px;
+    color: #707070; /* Color plomo */
+}
+
+.note {
+    background-color: #fff3cd;
+    padding: 10px;
+    border: 1px solid #ffeeba;
+    margin-top: 10px;
+    color: #707070; /* Color plomo */
+}
+/* General */
+.felicitaciones-profesores {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.titulo-plomo {
+    color: #6c757d; /* Plomo */
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    color: #7f8c8d;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+/* Contenedor de los profesores */
+.profesores-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px; /* Espaciado reducido */
+}
+
+/* Estilo individual de los perfiles */
+.profesor {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    width: 300px; /* Tamaño reducido */
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profesor-foto {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #f8a5c2; /* Borde rosado */
+    margin-bottom: 10px;
+}
+
+.curso, .materia {
+    font-size: 0.9rem;
+    color: #34495e;
 }

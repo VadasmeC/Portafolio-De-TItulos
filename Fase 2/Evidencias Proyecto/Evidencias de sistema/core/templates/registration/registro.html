@@ -6,7 +6,7 @@
 {% load static %}
 
 <!-- Título de la página -->
-<h3>REGISTRO DE USUARIO</h3>
+<h3 class="page-title">REGISTRO DE USUARIO</h3>
 
 <br>
 
@@ -51,9 +51,13 @@ body, html {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h3 {
+h3.page-title {
   margin-top: 40px;
   text-align: center;
+  color:#e4bdcc;; /* Color rosado */
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 45px ;
+  
 }
 
 .navbar-brand img {
@@ -70,13 +74,14 @@ h3 {
 /* Estilo del formulario */
 .form-signin-wrapper {
   width: 100%;
-  max-width: 600px; /* Aumenté el ancho máximo */
+  max-width: 600px; 
   padding: 20px;
   margin: auto;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 4px dashed #e4bdcc;
+  margin-bottom: 30px ;
 }
 
 /* Título dentro del formulario */
@@ -84,6 +89,8 @@ h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #9e9b9b;
+  text-align: center;
 }
 
 /* Estilo de los botones */

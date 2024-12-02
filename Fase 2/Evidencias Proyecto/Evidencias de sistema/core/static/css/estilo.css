@@ -90,3 +90,55 @@ body {
     border-bottom: none;
     margin-bottom: 0;
 }
+
+/* Estilos para la navbar responsiva */
+@media (max-width: 768px) {
+    /* Navbar en dispositivos pequeños */
+    .nav ul {
+        display: none; /* Oculta los enlaces en pantallas pequeñas */
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        background-color: #f8f9fa;
+        position: absolute;
+        top: 60px; /* Ajusta según el tamaño de tu barra de navegación */
+        left: 0;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    /* Mostrar el menú de navegación cuando se hace clic en el botón hamburguesa */
+    .nav.active ul {
+        display: flex; /* Muestra los enlaces */
+    }
+
+    /* Botón hamburguesa */
+    .hamburger {
+        display: block;
+        cursor: pointer;
+        font-size: 30px;
+        background-color: transparent;
+        border: none;
+        color: #333;
+    }
+
+    /* Estilo para el logo en pantallas pequeñas */
+    .logo {
+        height: 50px;
+    }
+}
+
+/* Estilos para el ícono del menú hamburguesa */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block; /* Se muestra el ícono del menú en pantallas pequeñas */
+    }
+
+    /* Estilos para el menú desplegado */
+    .nav.active ul {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}

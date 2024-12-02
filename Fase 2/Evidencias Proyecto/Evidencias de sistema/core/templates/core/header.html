@@ -1,7 +1,6 @@
 {% load static %}
 
-
-    <style>
+<style>
     .navbar {
         background-color: #fff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -39,24 +38,28 @@
         outline: none;
         box-shadow: none;
     }
-    </style>
+</style>
 
-
-    <nav class="navbar navbar-expand-lg navbar-light">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="#">
             <img src="{% static 'img/logo.png' %}" alt="logo" style="width: 205px;">
         </a>
-        <ul class="nav-links d-flex mb-0">
-            <li><a href="{% url 'home' %}" class="nav-link">Inicio</a></li>
-            {% if request.user.is_authenticated %}
-                <li><a href="{% url 'muro' %}" class="nav-link">Publicaciones</a></li>
-                <li><a href="{% url 'crear publicacion' %}" class="nav-link">Crear publicación</a></li>
-                <li><a href="{% url 'perfil' %}" class="nav-link">@{{ user.username | upper }}</a></li>
-                <li><a href="{% url 'exit' %}" class="nav-link">Salir</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}" class="nav-link">Ingresar</a></li>
-            {% endif %}
-        </ul>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="nav-links ms-auto mb-0"> <!-- ms-auto alinea los enlaces a la derecha -->
+                <li><a href="{% url 'home' %}" class="nav-link">Inicio</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'muro' %}" class="nav-link">Publicaciones</a></li>
+                    <li><a href="{% url 'crear publicacion' %}" class="nav-link">Crear publicación</a></li>
+                    <li><a href="{% url 'perfil' %}" class="nav-link">@{{ user.username | upper }}</a></li>
+                    <li><a href="{% url 'exit' %}" class="nav-link">Salir</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="nav-link">Ingresar</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
-    </nav>
+</nav>
