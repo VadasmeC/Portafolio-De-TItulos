@@ -61,7 +61,7 @@
                             <form action="{% url 'agregar_comentario' publicacion.PUBL_ID %}" method="post" class="mt-3">
                                 {% csrf_token %}
                                 <div class="input-group">
-                                    <input type="text" name="comentarios" class="form-control" placeholder="Escribe un comentario..." required>
+                                    <input type="text" name="comentario" class="form-control" placeholder="Escribe un comentario..." required>
                                     <button class="btn btn-primary" type="submit" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
                                         Enviar
                                     </button>

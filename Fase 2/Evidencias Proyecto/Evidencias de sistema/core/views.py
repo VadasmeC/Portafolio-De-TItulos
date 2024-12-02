@@ -202,8 +202,8 @@ def crear_publicacion(request):
             mensaje = (
                 f"Estimado(a),\n\n"
                 f"Se ha creado una nueva publicación: {publicacion.PUBL_TITULO}.\n\n"
-                f" {publicacion.PUBL_DESCRIPCION}.\n\n"
-                f" {publicacion.PUBL_IMAGEN}.\n\n"
+                f"Contenido de la publicación: {publicacion.PUBL_DESCRIPCION}.\n\n"
+                f"Contenido adicional: {publicacion.PUBL_IMAGEN}.\n\n"
                 
                 f"Te invitamos a visitar el sitio para obtener más detalles y mantenerte informado sobre las novedades.\n\n"
                 "Atentamente,\n"

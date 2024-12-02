@@ -3,8 +3,13 @@
 {% load custom_filters %}
 
 {% block content %}
-<div class="container mt-3">
-    <h2>Alumnos a Cargo</h2>
+
+<link rel="stylesheet" href="{% static 'css/crear_publicacion.css' %}">
+
+<div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-center" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Alumnos a Cargo
+    </h2>
 
     {% if alumnos_info %}
         <div class="accordion" id="accordionAlumnos">
@@ -12,7 +17,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading{{ forloop.counter }}">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
-                            {{ info.alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }} - {{ info.alumno.PEPE_CURS_ID.CURS_NOMBRE }}
+                            {{ info.alumno.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}: {{ info.alumno.PEPE_CURS_ID.CURS_NOMBRE }}
                         </button>
                     </h2>
                     <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionAlumnos">

@@ -40,7 +40,7 @@
 
                 {% if request.user.is_authenticated %}
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'crear publicacion' %}">Crear publicacion</a>
+                    <a class="nav-link" href="{% url 'crear publicacion' %}">Crear publicación</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'perfil' %}">@{{ user.username | upper }}</a>
