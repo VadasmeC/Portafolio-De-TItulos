@@ -36,9 +36,8 @@
                                 {{ nota.NOTA_VALOR }}
                                 {% if nota.NOTA_ID %}
                                     <!-- Botón para editar la nota -->
-                                    <a href="{% url 'editar_nota' nota.NOTA_ID %}" class="btn btn-sm" 
-                                       style="background-color: #e4bdcc; color: white; border-radius: 8px; border: none; padding: 5px 10px;">
-                                        Editar
+                                    <a href="{% url 'editar_nota' nota.NOTA_ID %}">  
+                                        <i class="bi bi-pencil-square" href="{% url 'editar_nota' nota.NOTA_ID %}"></i>
                                     </a>
                                 {% endif %}
                             </td>

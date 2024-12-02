@@ -184,7 +184,32 @@
             e.preventDefault();
 
             const perfilId = this.getAttribute('data-perfil-id');
-            const cursoId = this.get))
-        
-    
-            {% endblock %}
+            const cursoId = this.getAttribute('data-curso-id');
+
+            fetch("{% url 'perfil' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    perfil_id: perfilId,
+                    curso_id: cursoId,
+                })
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    if (data.perfil_tipo === 'Profesor') {
+                        window.location.href = "{% url 'index_profesor' %}";
+                    } else if (data.perfil_tipo === 'Alumno') {
+                        window.location.href = "{% url 'ver_notas_estudiante' %}";
+                    } else if (data.perfil_tipo === 'Apoderado') {
+                        window.location.href = "{% url 'ver_alumnos_a_cargo' %}";
+                    }
+                } else {
+                    alert('Hubo un problema con la selección. Por favor, inténtalo de nuevo.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

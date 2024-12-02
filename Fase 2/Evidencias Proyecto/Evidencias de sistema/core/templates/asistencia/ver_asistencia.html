@@ -1,69 +1,71 @@
 {% extends 'core/base.html' %}
+{% load custom_filters %}
 
 {% block content %}
 <div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h2 class="mb-4 text-center" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
-        Asignaturas del curso {{ curso.CURS_NOMBRE }}
+    <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+        Asistencia - {{ asignatura.ASI_NOMBRE }}
     </h2>
-    
-    {% if asignaturas %}
-        <div class="card mb-4 shadow-sm" style="border: 2px solid #e4bdcc; border-radius: 8px;">
-            <div class="card-body" style="background-color: #fff;">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" style="border-color: #e4bdcc;">
+
+    {% if estudiantes|length == 0 %}
+        <div class="alert alert-warning text-center" role="alert">
+            No hay estudiantes registrados en este curso.
+        </div>
+    {% else %}
+                    <table class="table table-bordered" style="border-color: #e4bdcc;">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Asignatura</th>
-                                <th scope="col" colspan="5" class="text-center">Acciones</th>
+                                <th>Estudiante</th>
+                                {% for fecha in fechas_unicas %}
+                                    <th>{{ fecha|date:"d/m" }}</th>
+                                {% endfor %}
+                                <th>Porcentaje de Asistencia</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for asignatura in asignaturas %}
+                            {% for estudiante in estudiantes %}
                             <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ asignatura.ASI_NOMBRE }}</td>
-                                <td class="text-center">
-                                    <a href="{% url 'poner_nota' asignatura.ASI_ID %}" class="btn btn-custom btn-login">
-                                        <i class="bi bi-pencil-square"></i> Registrar Notas
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'ver_notas_asignatura' asignatura.ASI_ID %}" class="btn btn-custom btn-login">
-                                        <i class="bi bi-journal-text"></i> Ver Notas
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'registrar_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-custom btn-login">
-                                        <i class="bi bi-check-circle"></i> Registrar Asistencia
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'ver_asistencia' asignatura_id=asignatura.ASI_ID %}" class="btn btn-custom btn-login">
-                                        <i class="bi bi-eye"></i> Ver Asistencia
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'anotaciones_por_asignatura' asignatura.ASI_ID %}" class="btn btn-custom btn-login">
-                                        <i class="bi bi-sticky"></i> Gestionar Anotaciones
-                                    </a>
+                                <td>{{ estudiante.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+
+                                {% for fecha in fechas_unicas %}
+                                    <td>
+                                        {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID|default_if_none:'' %}
+                                            {% if asistencia.asistencias|get_item:fecha %}
+                                                {% with registro=asistencia.asistencias|get_item:fecha %}
+                                                    {% if registro.ASIS_SINO_PRESENTE.SINO_ESTADO == "True" %}
+                                                        <span class="badge bg-success">Presente</span>
+                                                        <a href="{% url 'editar_asistencia' registro.ASIS_ID %}">  
+                                                            <i class="bi bi-pencil-square" href="{% url 'editar_asistencia' registro.ASIS_ID %}"></i>
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">Ausente</span>
+                                                      
+                                                        <a href="{% url 'editar_asistencia' registro.ASIS_ID %}">  
+                                                            <i class="bi bi-pencil-square" href="{% url 'editar_asistencia' registro.ASIS_ID %}"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="badge bg-secondary">N/A</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                {% endfor %}
+                                
+                                <td>
+                                    {% with asistencia=asistencia_por_estudiante|get_item:estudiante.PEPE_ID %}
+                                        <span class="badge bg-light text-dark">{{ asistencia.porcentaje_asistencia|default:0|floatformat:2 }}%</span>
+                                    {% endwith %}
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <div class="alert alert-warning text-center" style="background-color: #fff3cd; border: 2px dashed #dbb880; border-radius: 10px; padding: 15px;">
-            No hay asignaturas asociadas a este curso.
-        </div>
     {% endif %}
-
-    <div class="text-center mt-4">
-        <a href="{% url 'perfil' %}" class="btn btn-secondary btn-lg" style="border-radius: 8px;">
-            <i class="bi bi-arrow-left"></i> Volver a seleccionar perfil
+    
+    <div class="text-center mt-3">
+        <a href="{% url 'index_profesor' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a asignaturas
         </a>
     </div>
 </div>

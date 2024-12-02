@@ -190,6 +190,7 @@ def registro(request):
 # vista para crear publicaciones
 @login_required
 def crear_publicacion(request):
+    persona = request.user.personas
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
         if form.is_valid():
@@ -198,7 +199,17 @@ def crear_publicacion(request):
             # Obtener el perfil de la persona autenticada
             # Preparar la notificación por correo
             asunto = 'Nueva Publicación en el Sistema'
-            mensaje = f'Se ha creado una nueva publicación: {publicacion.PUBL_TITULO}. Visita el sitio para más detalles.'
+            mensaje = (
+                f"Estimado(a),\n\n"
+                f"Se ha creado una nueva publicación: {publicacion.PUBL_TITULO}.\n\n"
+                f" {publicacion.PUBL_DESCRIPCION}.\n\n"
+                f" {publicacion.PUBL_IMAGEN}.\n\n"
+                
+                f"Te invitamos a visitar el sitio para obtener más detalles y mantenerte informado sobre las novedades.\n\n"
+                "Atentamente,\n"
+                "El equipo de Colegio Niños Felices"
+            )
+
 
             # Obtener correos de los usuarios con un perfil apoderado
             apoderado_perfil_id = 21  
