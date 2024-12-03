@@ -12,14 +12,19 @@
         </div>
 
         <!-- Botones -->
-        <button type="submit" class="btn btn-custom btn-login" style="background-color: rgb(95, 218, 218); color: #fff; border: none; width: 100%; font-size: 18px; font-weight: bold; padding: 10px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-            Guardar
-        </button>
-        <a href="{% url 'ver_asistencia' asistencia.ASIS_ASIG_ID.ASI_ID %}" class="btn btn-custom btn-register" style="background-color: #e5a0bb; color: #fff; border: none; width: 100%; font-size: 18px; font-weight: bold; padding: 10px; border-radius: 8px; text-align: center; display: block; text-decoration: none; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-            Volver a la lista
-        </a>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-custom btn-login" style="background-color: #e4bdcc; color: #fff; border: none; font-size: 18px; font-weight: bold; padding: 10px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                Guardar
+            </button>
+        </div>
 
-        <p class="mt-5 mb-3 text-muted" style="font-size: 14px;">JOKAVI &copy; 2024</p>
     </form>
 </div>
+<div class="text-center mt-4">
+    <a href="{% url 'index_profesor' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver a asignaturas
+    </a>
+</div>
+<p class="mt-5 mb-3 text-muted" style="font-size: 14px;">JOKAVI &copy; 2024</p>
+
 {% endblock %}
