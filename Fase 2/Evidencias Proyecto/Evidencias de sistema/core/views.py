@@ -608,13 +608,18 @@ def listar_alumnos_por_asignatura(request, asignatura_id):
         PEPE_PERF_ID__PERF_ID=22
     )
     
+    # Recuperar las anotaciones de los alumnos del curso asociado a la asignatura
+    anotaciones = Anotaciones.objects.filter(
+        ANOT_ASIG_ID=asignatura_id
+    ).select_related('ANOT_PEPE_ID')  # Optimización para evitar consultas adicionales
+
     context = {
         'asignatura': asignatura,
-        'alumnos': alumnos
+        'alumnos': alumnos,
+        'anotaciones': anotaciones,
     }
     
     return render(request, 'anotaciones/anotaciones.html', context)
-
 @login_required
 def agregar_anotacion(request, asignatura_id, alumno_id):
     asignatura = get_object_or_404(Asignaturas, ASI_ID=asignatura_id)

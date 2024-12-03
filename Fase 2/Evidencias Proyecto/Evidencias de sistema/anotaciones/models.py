@@ -16,8 +16,8 @@ class AnotacionesTipos(models.Model):
 
 class Anotaciones(models.Model):
     ANOT_ID = models.AutoField(primary_key=True)
-    ANOT_TITULO = models.TextField(max_length=100, null=True, blank=True, verbose_name='Titulo anotación')
-    ANOT_DESCRIPCION = models.TextField(max_length=255, null=True, blank=True, verbose_name='Descripción')
+    ANOT_TITULO = models.TextField(max_length=100, verbose_name='Titulo anotación')
+    ANOT_DESCRIPCION = models.TextField(max_length=255, verbose_name='Descripción')
     ANOT_FECHACREACION = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
     # Relaciones
     ANOT_PEPE_ID = models.ForeignKey(PersonasPerfiles, on_delete=models.CASCADE, verbose_name='Alumno')

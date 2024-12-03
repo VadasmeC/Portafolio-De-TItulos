@@ -1,9 +1,9 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-    <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
-        Gestionar Anotaciones para {{ asignatura.ASI_NOMBRE }}
-    </h2>
+<h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+    Gestionar Anotaciones para {{ asignatura.ASI_NOMBRE }}
+</h2>
 
 <div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <h4 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 1.5rem;">
@@ -37,6 +37,38 @@
         </div>
     {% else %}
         <p>No hay alumnos registrados para esta asignatura.</p>
+    {% endif %}
+
+    <!-- Listado de anotaciones -->
+    <h4 class="text-center mb-4 mt-5" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 1.5rem;">
+        Anotaciones existentes de la asignatura.
+    </h4>
+
+    {% if anotaciones %}
+        <div class="table-responsive">
+            <table class="table table-striped" style="border-color: #e4bdcc;">
+                <thead class="table-light">
+                    <tr>
+                        <th>Alumno</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for anotacion in anotaciones %}
+                    <tr>
+                        <td>{{ anotacion.ANOT_PEPE_ID.PEPE_PERS_ID.PERS_NOMBRECOMPLETO }}</td>
+                        <td>{{ anotacion.ANOT_FECHACREACION|date:"d/m/Y" }}</td>
+                        <td>{{ anotacion.ANOT_ANOT_T_ID.ANOT_T_NOMBRE}}</td>
+                        <td>{{ anotacion.ANOT_DESCRIPCION }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No hay anotaciones registradas para este curso.</p>
     {% endif %}
 
     <div class="text-center mt-4">
