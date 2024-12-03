@@ -1,15 +1,25 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="container mt-4" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
-        Editar asistencia
-    </h2>    
-        <form method="POST">
-            {% csrf_token %}
+<div class="form-signin-wrapper" style="background-color: #fff; border: 4px dashed #e4bdcc; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <form class="form-signin" method="POST">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 fw-normal" style="color: #ff97bf;">Editar Asistencia</h1>
+
+        <!-- Renderizado de campos del formulario -->
+        <div class="form-floating" style="margin-bottom: 20px;">
             {{ form.as_p }}
-            <button type="submit">Guardar</button>
-        </form>
-        <a href="{% url 'ver_asistencia' asistencia.ASIS_ASIG_ID.ASI_ID %}">Volver a la lista de asistencia</a>
+        </div>
+
+        <!-- Botones -->
+        <button type="submit" class="btn btn-custom btn-login" style="background-color: rgb(95, 218, 218); color: #fff; border: none; width: 100%; font-size: 18px; font-weight: bold; padding: 10px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+            Guardar
+        </button>
+        <a href="{% url 'ver_asistencia' asistencia.ASIS_ASIG_ID.ASI_ID %}" class="btn btn-custom btn-register" style="background-color: #e5a0bb; color: #fff; border: none; width: 100%; font-size: 18px; font-weight: bold; padding: 10px; border-radius: 8px; text-align: center; display: block; text-decoration: none; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+            Volver a la lista
+        </a>
+
+        <p class="mt-5 mb-3 text-muted" style="font-size: 14px;">JOKAVI &copy; 2024</p>
+    </form>
 </div>
 {% endblock %}

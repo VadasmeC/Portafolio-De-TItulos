@@ -1,20 +1,27 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-    <div class="container mt-3" style="background-color: #fdf5f5; border: 4px dashed #e4bdcc; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-        <h2 class="text-center mb-4" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2.5rem;">
+    <div class="container mt-3" style="max-width: 600px; background-color: #fff; border: 4px solid #c94f6d; border-radius: 10px; padding: 30px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);">
+        <h2 class="text-center mb-4" style="font-family: 'Verdana', 'Geneva', 'Tahoma', sans-serif; font-size: 2.5rem; color: #c94f6d;">
             Editar Nota
         </h2>
         
-        <form method="POST">
+        <form method="POST" style="border: 2px dashed #e4bdcc; border-radius: 8px; padding: 20px; background-color: #fdf5f5;">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
-                Guardar cambios
-            </button>
-            <a href="{% url 'ver_notas_asignatura' nota.NOTA_ASIG_ID.ASI_ID %}" class="btn" style="background-color: #e4bdcc; color: white; border-radius: 8px;">
-                Cancelar
-            </a>
+            <div style="margin-bottom: 20px;">
+                {{ form.as_p }}
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <!-- Botón de guardar cambios -->
+                <button type="submit" class="btn btn-lg" style="background-color: #95d5b2; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-weight: bold; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    Guardar cambios
+                </button>
+                <!-- Botón de cancelar -->
+                <a href="{% url 'ver_notas_asignatura' nota.NOTA_ASIG_ID.ASI_ID %}" class="btn btn-lg" style="background-color: #f28482; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-weight: bold; text-decoration: none; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    Cancelar
+                </a>
+            </div>
         </form>
     </div>
 {% endblock %}
